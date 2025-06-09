@@ -23,14 +23,10 @@ type MySQLConfig struct {
 }
 
 func InitConfig() {
-	//var mysqlCfg MySQLConfig
 	var conf Config
 	if err := env.Parse(&conf); err != nil {
 		log.Fatal("MySQL config parse error:", err)
 	}
 
-	// Conf = &Config{
-	// 	mysqlCfg,
-	// }
 	Conf = &conf
 }
