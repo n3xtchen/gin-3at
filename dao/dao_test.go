@@ -3,6 +3,7 @@ package dao
 import (
 	"fmt"
 	"log"
+	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -10,8 +11,10 @@ import (
 	conf "github.com/n3xtchen/gin-3at/config"
 )
 
-func TestDBConf(t *testing.T) {
+func setupDB() {
+	log.Println("setup DB")
 	if err := godotenv.Load("../test.env"); err != nil {
+
 		log.Println(err)
 		log.Println("No .env file found or failed to load.")
 	}
@@ -19,8 +22,22 @@ func TestDBConf(t *testing.T) {
 	conf.InitConfig()
 	InitMySQL()
 
+	DB = NewDBClient()
+}
+
+func teardownDB() {
+	log.Println("teardown DB")
+}
+
+func TestMain(m *testing.M) {
+	setupDB()
+	code := m.Run()
+	teardownDB()
+	os.Exit(code)
+}
+
+func TestDBConf(t *testing.T) {
 	tables := make([]string, 0)
-	db := NewDBClient()
-	db.Raw("SHOW TABLES").Scan(&tables)
+	DB.Raw("SHOW TABLES").Scan(&tables)
 	fmt.Println(tables)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	_db *gorm.DB
+	DB *gorm.DB
 )
 
 func InitMySQL() {
@@ -22,10 +22,10 @@ func InitMySQL() {
 		panic(err)
 	}
 
-	_db = db
+	DB = db
 }
 
 func NewDBClient() *gorm.DB {
-	db := _db
+	db := DB
 	return db
 }
