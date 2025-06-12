@@ -15,6 +15,14 @@ func NewAddressDao() *AddressDao {
 	}
 }
 
+// CreateAddress creates a new address in the database.
+func (dao *AddressDao) CreateAddress(address m.Address) error {
+	if err := dao.DB.Create(&address).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetOrCreateAddressID retrieves the address ID if it exists, or creates a new address and returns its ID.
 func (dao *AddressDao) GetOrCreateAddressID(address m.Address) (uint, error) {
 	var existingAddress m.Address

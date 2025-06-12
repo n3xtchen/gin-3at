@@ -1,10 +1,20 @@
 package dao
 
 import (
+	"gorm.io/gorm"
+
 	m "github.com/n3xtchen/gin-3at/model"
 )
 
 type OrderDao struct {
+	*gorm.DB
+}
+
+// NewOrderDao creates a new instance of OrderDao.
+func NewOrderDao() *OrderDao {
+	return &OrderDao{
+		DB: DB,
+	}
 }
 
 // CreateOrder creates a new order with the given details.
@@ -45,4 +55,13 @@ func (dao *OrderDao) CreateOrder(order m.Order, address m.Address, items []m.Ord
 	}
 
 	return nil
+}
+
+// GetOrderByID retrieves an order by its ID.
+func (dao *OrderDao) GetOrderByID(orderID uint) (*m.Order, error) {
+	var order m.Order
+	if err := DB.Preload("OrderItems").Preload("Address").Preload("OrderItems.Product").First(&order, orderID).Error; err != nil {
+		return nil, err
+	}
+	return &order, nil
 }

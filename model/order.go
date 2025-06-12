@@ -13,7 +13,7 @@ const (
 
 type Order struct {
 	gorm.Model
-	OrderNum   uint64  // 订单号
+	OrderNum   string  // 订单号
 	UserID     uint    `gorm:"not null"`
 	AddressID  uint    `gorm:"not null"`
 	Address    Address `gorm:"foreignKey:AddressID;references:ID"`

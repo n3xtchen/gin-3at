@@ -36,3 +36,27 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 	}
 	t.Log("Order created successfully")
 }
+
+func TestOrderDaoGetOrderByID(t *testing.T) {
+	orderDao := &OrderDao{}
+
+	// 假设订单 ID 为 1
+	orderID := uint(1)
+
+	order, err := orderDao.GetOrderByID(orderID)
+	for _, item := range order.OrderItems {
+		t.Logf("Order Item: %+v", item.ProductID)
+		t.Logf("Item Name: %+v", item.Product.Name)
+	}
+	if err != nil {
+		t.Errorf("Failed to get order by ID %d: %v", orderID, err)
+		return
+	}
+
+	if order == nil {
+		t.Errorf("Order with ID %d not found", orderID)
+		return
+	}
+
+	t.Logf("Order retrieved successfully: %+v", order)
+}
