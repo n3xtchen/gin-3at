@@ -12,14 +12,14 @@ type OrderItemDao struct {
 }
 
 // NewOrderItemDao creates a new instance of OrderItemDao.
-func NewOrderItemDao() *OrderItemDao {
+func NewOrderItemDao(db *gorm.DB) *OrderItemDao {
 	return &OrderItemDao{
-		DB: DB,
+		DB: db,
 	}
 }
 
 // CreateOrderItem creates a new order item in the database.
-func (dao *OrderItemDao) CreateOrderItem(item m.OrderItem) error {
+func (dao *OrderItemDao) Create(item m.OrderItem) error {
 	if err := dao.DB.Create(&item).Error; err != nil {
 		return err
 	}

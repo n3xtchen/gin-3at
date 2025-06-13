@@ -16,16 +16,8 @@ func TestProductDaoGetProducts(t *testing.T) {
 
 	// pretty print products
 	t.Logf("Retrieved %d products", len(products))
-	for _, product := range products {
-		t.Logf("Product: %+v", product.Name)
-		t.Logf("Product Category: %+v", product.Category.Name)
-	}
 
 	if len(products) == 0 {
 		t.Fatal("Expected to get some products, but got none")
-	}
-
-	for _, product := range products {
-		t.Logf("Product: %+v", product)
 	}
 }

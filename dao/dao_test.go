@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -16,7 +15,6 @@ import (
 func setupDB() {
 	log.Println("setup DB")
 	if err := godotenv.Load("../test.env"); err != nil {
-
 		log.Println(err)
 		log.Println("No .env file found or failed to load.")
 	}
@@ -45,7 +43,7 @@ func setupDB() {
 	}
 
 	// Seed AddressSeed
-	addressDao := NewAddressDao()
+	addressDao := NewAddressDao(DB)
 	for _, address := range s.AddressSeed {
 		if err := addressDao.CreateAddress(address); err != nil {
 			log.Fatalf("Failed to seed address: %v", err)
@@ -53,7 +51,7 @@ func setupDB() {
 	}
 
 	// seed OrderSeed
-	orderDao := NewOrderDao()
+	orderDao := NewOrderDao(DB)
 	for _, order := range s.OrderSeed {
 		if err := orderDao.Create(&order).Error; err != nil {
 			log.Fatalf("Failed to seed order: %v", err)
@@ -61,9 +59,9 @@ func setupDB() {
 	}
 
 	// Seed OrderItemSeed
-	orderItemDao := NewOrderItemDao()
+	orderItemDao := NewOrderItemDao(DB)
 	for _, orderItem := range s.OrderItemSeed {
-		if err := orderItemDao.CreateOrderItem(orderItem); err != nil {
+		if err := orderItemDao.Create(orderItem); err != nil {
 			log.Fatalf("Failed to seed order item: %v", err)
 		}
 	}
@@ -90,5 +88,5 @@ func TestMain(m *testing.M) {
 func TestDBConf(t *testing.T) {
 	tables := make([]string, 0)
 	DB.Raw("SHOW TABLES").Scan(&tables)
-	fmt.Println(tables)
+	log.Println(tables)
 }
