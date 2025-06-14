@@ -7,19 +7,19 @@ import (
 )
 
 type CategoryDao struct {
-	*gorm.DB
+	db *gorm.DB
 }
 
 // NewCategoryDao creates a new instance of CategoryDao.
-func NewCategoryDao() *CategoryDao {
+func NewCategoryDao(db *gorm.DB) *CategoryDao {
 	return &CategoryDao{
-		DB: DB,
+		db,
 	}
 }
 
 // create Category
 func (dao *CategoryDao) CreateCategory(category m.Category) error {
-	if err := dao.DB.Create(&category).Error; err != nil {
+	if err := dao.db.Create(&category).Error; err != nil {
 		return err
 	}
 	return nil
@@ -28,7 +28,7 @@ func (dao *CategoryDao) CreateCategory(category m.Category) error {
 // list Categories
 func (dao *CategoryDao) ListCategories() ([]m.Category, error) {
 	var categories []m.Category
-	if err := dao.DB.Find(&categories).Error; err != nil {
+	if err := dao.db.Find(&categories).Error; err != nil {
 		return nil, err
 	}
 	return categories, nil

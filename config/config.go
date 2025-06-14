@@ -6,10 +6,6 @@ import (
 	"github.com/caarlos0/env/v11"
 )
 
-var (
-	Conf *Config
-)
-
 type Config struct {
 	MySQL MySQLConfig
 }
@@ -22,11 +18,11 @@ type MySQLConfig struct {
 	Database string `env:"MYSQL_DB" envDefault:"test"`
 }
 
-func InitConfig() {
+func InitConfig() *Config {
 	var conf Config
 	if err := env.Parse(&conf); err != nil {
 		log.Fatal("MySQL config parse error:", err)
 	}
 
-	Conf = &conf
+	return &conf
 }

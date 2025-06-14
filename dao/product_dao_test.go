@@ -6,7 +6,7 @@ import (
 
 // test GetProducts
 func TestProductDaoGetProducts(t *testing.T) {
-	dao := NewProductDao()
+	dao := NewProductDao(db)
 
 	// Get all products
 	products, err := dao.GetProducts(10, 0)

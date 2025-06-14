@@ -7,13 +7,13 @@ import (
 )
 
 type OrderDao struct {
-	*gorm.DB
+	db *gorm.DB
 }
 
 // NewOrderDao creates a new instance of OrderDao.
 func NewOrderDao(db *gorm.DB) *OrderDao {
 	return &OrderDao{
-		DB: db,
+		db,
 	}
 }
 
@@ -22,7 +22,7 @@ func (dao *OrderDao) CreateOrder(order m.Order) error {
 
 	// todo: Validate the order, address, and items.
 
-	if err := dao.Create(&order).Error; err != nil {
+	if err := dao.db.Create(&order).Error; err != nil {
 		return err
 	}
 
@@ -32,7 +32,7 @@ func (dao *OrderDao) CreateOrder(order m.Order) error {
 // GetOrderByID retrieves an order by its ID.
 func (dao *OrderDao) GetOrderByID(orderID uint) (*m.Order, error) {
 	var order m.Order
-	if err := DB.Preload("OrderItems").Preload("Address").Preload("OrderItems.Product").First(&order, orderID).Error; err != nil {
+	if err := dao.db.Preload("OrderItems").Preload("Address").Preload("OrderItems.Product").First(&order, orderID).Error; err != nil {
 		return nil, err
 	}
 	return &order, nil

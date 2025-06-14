@@ -6,11 +6,15 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 
 	conf "github.com/n3xtchen/gin-3at/config"
 	m "github.com/n3xtchen/gin-3at/model"
 	s "github.com/n3xtchen/gin-3at/seed"
 )
+
+// DB is the global database client
+var db *gorm.DB
 
 func setupDB() {
 	log.Println("setup DB")
@@ -19,15 +23,14 @@ func setupDB() {
 		log.Println("No .env file found or failed to load.")
 	}
 
-	conf.InitConfig()
-	InitMySQL()
+	testConf := conf.InitConfig()
+	mysqlConf := testConf.MySQL
+	db = InitMySQL(mysqlConf.User, mysqlConf.Password, mysqlConf.Host, mysqlConf.Port, mysqlConf.Database)
 
-	DB = NewDBClient()
-
-	DB.AutoMigrate(&m.Category{}, &m.Product{}, &m.Order{}, &m.OrderItem{}, &m.Address{})
+	db.AutoMigrate(&m.Category{}, &m.Product{}, &m.Order{}, &m.OrderItem{}, &m.Address{})
 
 	// Seed Categories
-	categoryDao := NewCategoryDao()
+	categoryDao := NewCategoryDao(db)
 	for _, category := range s.CategorySeed {
 		if err := categoryDao.CreateCategory(category); err != nil {
 			log.Fatalf("Failed to seed category: %v", err)
@@ -35,7 +38,7 @@ func setupDB() {
 	}
 
 	// Seed ProductSeed
-	productDao := NewProductDao()
+	productDao := NewProductDao(db)
 	for _, product := range s.ProductSeed {
 		if err := productDao.CreateProduct(product); err != nil {
 			log.Fatalf("Failed to seed product: %v", err)
@@ -43,7 +46,7 @@ func setupDB() {
 	}
 
 	// Seed AddressSeed
-	addressDao := NewAddressDao(DB)
+	addressDao := NewAddressDao(db)
 	for _, address := range s.AddressSeed {
 		if err := addressDao.CreateAddress(address); err != nil {
 			log.Fatalf("Failed to seed address: %v", err)
@@ -51,15 +54,15 @@ func setupDB() {
 	}
 
 	// seed OrderSeed
-	orderDao := NewOrderDao(DB)
+	orderDao := NewOrderDao(db)
 	for _, order := range s.OrderSeed {
-		if err := orderDao.Create(&order).Error; err != nil {
+		if err := orderDao.CreateOrder(order); err != nil {
 			log.Fatalf("Failed to seed order: %v", err)
 		}
 	}
 
 	// Seed OrderItemSeed
-	orderItemDao := NewOrderItemDao(DB)
+	orderItemDao := NewOrderItemDao(db)
 	for _, orderItem := range s.OrderItemSeed {
 		if err := orderItemDao.Create(orderItem); err != nil {
 			log.Fatalf("Failed to seed order item: %v", err)
@@ -72,7 +75,7 @@ func setupDB() {
 func teardownDB() {
 	// seed data is not deleted, but you can drop tables if needed
 	log.Println("teardown DB")
-	if err := DB.Migrator().DropTable(&m.Product{}, &m.Category{}, &m.Order{}, &m.OrderItem{}, &m.Address{}); err != nil {
+	if err := db.Migrator().DropTable(&m.Product{}, &m.Category{}, &m.Order{}, &m.OrderItem{}, &m.Address{}); err != nil {
 		log.Fatalf("Failed to drop tables: %v", err)
 	}
 	log.Println("Tables dropped successfully.")
@@ -87,6 +90,6 @@ func TestMain(m *testing.M) {
 
 func TestDBConf(t *testing.T) {
 	tables := make([]string, 0)
-	DB.Raw("SHOW TABLES").Scan(&tables)
+	db.Raw("SHOW TABLES").Scan(&tables)
 	log.Println(tables)
 }

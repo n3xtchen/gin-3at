@@ -12,6 +12,6 @@ func TestConfig(t *testing.T) {
 		log.Println(err)
 		log.Println("No .env file found or failed to load.")
 	}
-	InitConfig()
-	log.Println(Conf)
+	conf := InitConfig()
+	log.Println(conf)
 }

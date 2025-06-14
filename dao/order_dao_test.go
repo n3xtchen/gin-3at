@@ -9,7 +9,7 @@ import (
 
 func TestOrderDaoCreateOrder(t *testing.T) {
 
-	err := DB.Transaction(func(tx *gorm.DB) error {
+	err := db.Transaction(func(tx *gorm.DB) error {
 		// 初始化 OrderDao
 		orderDao := NewOrderDao(tx)
 
@@ -47,7 +47,7 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 }
 
 func TestOrderDaoGetOrderByID(t *testing.T) {
-	orderDao := NewOrderDao(DB)
+	orderDao := NewOrderDao(db)
 
 	// 假设订单 ID 为 1
 	orderID := uint(1)

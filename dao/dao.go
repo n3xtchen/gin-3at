@@ -5,27 +5,15 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-
-	conf "github.com/n3xtchen/gin-3at/config"
 )
 
-var (
-	DB *gorm.DB
-)
-
-func InitMySQL() {
-	mysqlConf := conf.Conf.MySQL
+func InitMySQL(user, password, host string, port int, database string) *gorm.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8mb4",
-		mysqlConf.User, mysqlConf.Password, mysqlConf.Host, mysqlConf.Port, mysqlConf.Database)
+		user, password, host, port, database)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 
-	DB = db
-}
-
-func NewDBClient() *gorm.DB {
-	db := DB
 	return db
 }

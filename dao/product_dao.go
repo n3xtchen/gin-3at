@@ -7,18 +7,18 @@ import (
 )
 
 type ProductDao struct {
-	*gorm.DB
+	db *gorm.DB
 }
 
-func NewProductDao() *ProductDao {
+func NewProductDao(db *gorm.DB) *ProductDao {
 	return &ProductDao{
-		DB: DB,
+		db,
 	}
 }
 
 // CreateProduct creates a new product in the database.
 func (dao *ProductDao) CreateProduct(product m.Product) error {
-	if err := dao.DB.Create(&product).Error; err != nil {
+	if err := dao.db.Create(&product).Error; err != nil {
 		return err
 	}
 	return nil
@@ -29,7 +29,7 @@ func (dao *ProductDao) CreateProduct(product m.Product) error {
 // with Category, you can use Preload to load the category information.
 func (dao *ProductDao) GetProducts(limit, offset int) ([]m.Product, error) {
 	var products []m.Product
-	if err := dao.DB.Preload("Category").Limit(limit).Offset(offset).Find(&products).Error; err != nil {
+	if err := dao.db.Preload("Category").Limit(limit).Offset(offset).Find(&products).Error; err != nil {
 		return nil, err
 	}
 	return products, nil
@@ -39,7 +39,7 @@ func (dao *ProductDao) GetProducts(limit, offset int) ([]m.Product, error) {
 // with Category, you can use Preload to load the category information.
 func (dao *ProductDao) GetProductByID(productID uint) (*m.Product, error) {
 	var product m.Product
-	if err := dao.DB.Preload("Category").First(&product, productID).Error; err != nil {
+	if err := dao.db.Preload("Category").First(&product, productID).Error; err != nil {
 		return nil, err
 	}
 	return &product, nil
@@ -50,7 +50,7 @@ func (dao *ProductDao) GetProductByID(productID uint) (*m.Product, error) {
 // with Category, you can use Preload to load the category information.
 func (dao *ProductDao) GetProductByCategoryID(categoryID uint, limit, offset int) ([]m.Product, error) {
 	var products []m.Product
-	if err := dao.DB.Where("category_id = ?", categoryID).Preload("Category").Limit(limit).Offset(offset).Find(&products).Error; err != nil {
+	if err := dao.db.Where("category_id = ?", categoryID).Preload("Category").Limit(limit).Offset(offset).Find(&products).Error; err != nil {
 		return nil, err
 	}
 	return products, nil
