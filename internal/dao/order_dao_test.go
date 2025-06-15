@@ -3,7 +3,7 @@ package dao
 import (
 	"testing"
 
-	m "github.com/n3xtchen/gin-3at/model"
+	m "github.com/n3xtchen/gin-3at/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -29,10 +29,10 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 
 		// 创建订单，地址
 		order := m.Order{
-			UserID:     1,
-			Status:     m.OrderStatusUnpaid,
-			Address:    address,
-			OrderItems: items,
+			BuyerID: 1,
+			Status:  2,
+			Address: address,
+			Items:   items,
 		}
 
 		err := orderDao.CreateOrder(order)
@@ -64,5 +64,5 @@ func TestOrderDaoGetOrderByID(t *testing.T) {
 	}
 
 	t.Logf("Order Wiht ID %d retrieved successfully", order.ID)
-	t.Logf("Retrieved %d item", len(order.OrderItems))
+	t.Logf("Retrieved %d item", len(order.Items))
 }

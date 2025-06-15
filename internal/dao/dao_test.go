@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 
 	conf "github.com/n3xtchen/gin-3at/config"
-	m "github.com/n3xtchen/gin-3at/model"
-	s "github.com/n3xtchen/gin-3at/seed"
+	m "github.com/n3xtchen/gin-3at/internal/model"
+	s "github.com/n3xtchen/gin-3at/internal/seed"
 )
 
 // DB is the global database client
@@ -18,7 +18,7 @@ var db *gorm.DB
 
 func setupDB() {
 	log.Println("setup DB")
-	if err := godotenv.Load("../test.env"); err != nil {
+	if err := godotenv.Load("../../test.env"); err != nil {
 		log.Println(err)
 		log.Println("No .env file found or failed to load.")
 	}

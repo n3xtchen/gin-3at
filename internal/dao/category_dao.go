@@ -3,7 +3,7 @@ package dao
 import (
 	"gorm.io/gorm"
 
-	m "github.com/n3xtchen/gin-3at/model"
+	m "github.com/n3xtchen/gin-3at/internal/model"
 )
 
 type CategoryDao struct {

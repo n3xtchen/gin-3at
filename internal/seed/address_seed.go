@@ -3,7 +3,7 @@ package seed
 import (
 	"gorm.io/gorm"
 
-	m "github.com/n3xtchen/gin-3at/model"
+	m "github.com/n3xtchen/gin-3at/internal/model"
 )
 
 // AddressSeed is a slice of Address objects used for seeding the database.

@@ -3,7 +3,7 @@ package dao
 import (
 	"gorm.io/gorm"
 
-	m "github.com/n3xtchen/gin-3at/model"
+	m "github.com/n3xtchen/gin-3at/internal/model"
 )
 
 // OrderItemDao is a data access object for managing OrderItem entities.

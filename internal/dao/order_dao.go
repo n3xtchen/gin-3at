@@ -3,7 +3,7 @@ package dao
 import (
 	"gorm.io/gorm"
 
-	m "github.com/n3xtchen/gin-3at/model"
+	m "github.com/n3xtchen/gin-3at/internal/model"
 )
 
 type OrderDao struct {
@@ -32,7 +32,7 @@ func (dao *OrderDao) CreateOrder(order m.Order) error {
 // GetOrderByID retrieves an order by its ID.
 func (dao *OrderDao) GetOrderByID(orderID uint) (*m.Order, error) {
 	var order m.Order
-	if err := dao.db.Preload("OrderItems").Preload("Address").Preload("OrderItems.Product").First(&order, orderID).Error; err != nil {
+	if err := dao.db.Preload("Items").Preload("Address").Preload("Items.Product").First(&order, orderID).Error; err != nil {
 		return nil, err
 	}
 	return &order, nil

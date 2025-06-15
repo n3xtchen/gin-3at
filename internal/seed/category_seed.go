@@ -3,7 +3,7 @@ package seed
 import (
 	"gorm.io/gorm"
 
-	m "github.com/n3xtchen/gin-3at/model"
+	m "github.com/n3xtchen/gin-3at/internal/model"
 )
 
 // CategorySeed is a slice of Category objects used for seeding the database.
