@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type OrderStatus uint
+type OrderStatus int
 
 // 支付状态枚举
 const (
@@ -16,10 +16,12 @@ const (
 )
 
 type Order struct {
-	ID          string      // 业务唯一标识
+	ID          int         // 业务唯一标识
 	OrderNumber string      // 订单编号
-	BuyerID     string      // 买家ID
+	BuyerID     int         // 买家ID
 	Items       []OrderItem // 订单项
+	AddressID   int         // 收货地址ID
+	Address     Address     // 收货地址
 	Amount      float64     // 总金额
 	Status      OrderStatus // 订单状态
 	Remark      string      // 备注
@@ -32,7 +34,7 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ProductID   string
+	ProductID   int
 	ProductName string
 	Quantity    int
 	Price       float64

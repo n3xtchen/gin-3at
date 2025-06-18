@@ -3,7 +3,9 @@ package dao
 import (
 	"gorm.io/gorm"
 
+	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
 	m "github.com/n3xtchen/gin-3at/internal/model"
+	repo "github.com/n3xtchen/gin-3at/internal/repository"
 )
 
 type OrderDao struct {
@@ -11,14 +13,14 @@ type OrderDao struct {
 }
 
 // NewOrderDao creates a new instance of OrderDao.
-func NewOrderDao(db *gorm.DB) *OrderDao {
+func NewOrderDao(db *gorm.DB) *repo.OrderRepository {
 	return &OrderDao{
 		db,
 	}
 }
 
 // CreateOrder creates a new order with the given details.
-func (dao *OrderDao) CreateOrder(order m.Order) error {
+func (dao *OrderDao) Save(order e.Order) error {
 
 	// todo: Validate the order, address, and items.
 
@@ -30,10 +32,10 @@ func (dao *OrderDao) CreateOrder(order m.Order) error {
 }
 
 // GetOrderByID retrieves an order by its ID.
-func (dao *OrderDao) GetOrderByID(orderID uint) (*m.Order, error) {
+func (dao *OrderDao) GetDetailByID(orderID int) (*e.Order, error) {
 	var order m.Order
 	if err := dao.db.Preload("Items").Preload("Address").Preload("Items.Product").First(&order, orderID).Error; err != nil {
 		return nil, err
 	}
-	return &order, nil
+	return order.ToEntity(), nil
 }
