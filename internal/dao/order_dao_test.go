@@ -35,7 +35,12 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 			Items:   items,
 		}
 
-		err := orderDao.CreateOrder(order)
+		orderEntity := order.ToEntity()
+		for _, item := range orderEntity.Items {
+			t.Log(item.ProductID, item.Quantity, item.Price)
+		}
+
+		err := orderDao.Save(orderEntity)
 		return err
 	})
 
@@ -43,6 +48,8 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 		t.Errorf("Failed to create order: %v", err)
 		return
 	}
+
+	// t.Logf("Order Wiht ID %d retrieved successfully", order.ID)
 	t.Log("Order created successfully")
 }
 
@@ -50,9 +57,9 @@ func TestOrderDaoGetOrderByID(t *testing.T) {
 	orderDao := NewOrderDao(db)
 
 	// 假设订单 ID 为 1
-	orderID := uint(1)
+	orderID := int(1)
 
-	order, err := orderDao.GetOrderByID(orderID)
+	order, err := orderDao.GetDetailByID(orderID)
 	if err != nil {
 		t.Errorf("Failed to get order by ID %d: %v", orderID, err)
 		return

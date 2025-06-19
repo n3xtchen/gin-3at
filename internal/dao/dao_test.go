@@ -54,9 +54,9 @@ func setupDB() {
 	}
 
 	// seed OrderSeed
-	orderDao := NewOrderDao(db)
+	// orderDao := NewOrderDao(db)
 	for _, order := range s.OrderSeed {
-		if err := orderDao.CreateOrder(order); err != nil {
+		if err := db.Create(&order).Error; err != nil {
 			log.Fatalf("Failed to seed order: %v", err)
 		}
 	}

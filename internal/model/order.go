@@ -25,10 +25,17 @@ type Order struct {
 }
 
 func (model Order) ToEntity() *e.Order {
+	orderItems := make([]e.OrderItem, len(model.Items))
+	for i, item := range model.Items {
+		orderItems[i] = item.ToEntity()
+
+	}
 	return &e.Order{
 		ID:          int(model.ID),
 		OrderNumber: model.OrderNum,
 		BuyerID:     int(model.BuyerID),
+		Address:     model.Address.ToEntity(), // Address should be set separately
+		Items:       orderItems,
 		Amount:      model.Amount,
 		Status:      e.OrderStatus(model.Status),
 		Remark:      model.Remark,
@@ -41,8 +48,8 @@ func (model Order) ToEntity() *e.Order {
 	}
 }
 
-func FromEntityOrder(entity e.Order) Order {
-	return Order{
+func FromEntityOrder(entity *e.Order) *Order {
+	return &Order{
 		Model:       gorm.Model{ID: uint(entity.ID)},
 		OrderNum:    entity.OrderNumber,
 		BuyerID:     uint(entity.BuyerID),
