@@ -34,6 +34,7 @@ type Order struct {
 }
 
 type OrderItem struct {
+	ID          int
 	ProductID   int
 	ProductName string
 	Quantity    int

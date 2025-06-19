@@ -3,11 +3,14 @@ package dao
 import (
 	"testing"
 
+	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
 	m "github.com/n3xtchen/gin-3at/internal/model"
 	"gorm.io/gorm"
 )
 
 func TestOrderDaoCreateOrder(t *testing.T) {
+
+	var myOrder e.Order
 
 	err := db.Transaction(func(tx *gorm.DB) error {
 		// 初始化 OrderDao
@@ -36,11 +39,8 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 		}
 
 		orderEntity := order.ToEntity()
-		for _, item := range orderEntity.Items {
-			t.Log(item.ProductID, item.Quantity, item.Price)
-		}
-
-		err := orderDao.Save(orderEntity)
+		err := orderDao.Save(&orderEntity)
+		myOrder = orderEntity
 		return err
 	})
 
@@ -49,7 +49,7 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 		return
 	}
 
-	// t.Logf("Order Wiht ID %d retrieved successfully", order.ID)
+	t.Logf("Order Wiht ID %d retrieved successfully", myOrder.ID)
 	t.Log("Order created successfully")
 }
 

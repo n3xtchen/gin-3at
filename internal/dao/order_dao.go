@@ -29,6 +29,9 @@ func (dao *OrderDao) Save(order *e.Order) error {
 		return err
 	}
 
+	// 新的值更新 order 实体的值
+	*order = orderModel.ToEntity()
+
 	return nil
 }
 
@@ -39,5 +42,7 @@ func (dao *OrderDao) GetDetailByID(orderID int) (*e.Order, error) {
 		// return order.ToEntity(), err
 		return nil, err
 	}
-	return order.ToEntity(), nil
+
+	orderEntity := order.ToEntity()
+	return &orderEntity, nil
 }

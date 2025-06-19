@@ -17,6 +17,7 @@ type OrderItem struct {
 
 func (model OrderItem) ToEntity() e.OrderItem {
 	return e.OrderItem{
+		ID:          int(model.ID),
 		ProductID:   int(model.ProductID),
 		ProductName: model.Product.Name, // Assuming Product has a Name field
 		Quantity:    model.Quantity,
