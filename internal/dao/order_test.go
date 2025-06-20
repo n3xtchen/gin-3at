@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"context"
 	"testing"
 
 	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
@@ -39,7 +40,8 @@ func TestOrderDaoCreateOrder(t *testing.T) {
 		}
 
 		orderEntity := order.ToEntity()
-		err := orderDao.Save(&orderEntity)
+		ctx := context.Background()
+		err := orderDao.Save(ctx, &orderEntity)
 		myOrder = orderEntity
 		return err
 	})

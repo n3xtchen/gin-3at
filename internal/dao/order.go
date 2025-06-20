@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"context"
+
 	"gorm.io/gorm"
 
 	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
@@ -20,12 +22,14 @@ func NewOrderDao(db *gorm.DB) repo.OrderRepository {
 }
 
 // CreateOrder creates a new order with the given details.
-func (dao *OrderDao) Save(order *e.Order) error {
+func (dao *OrderDao) Save(ctx context.Context, order *e.Order) error {
+
+	db := GetDBFromContext(ctx, dao.db)
 
 	// todo: Validate the order, address, and items.
 	orderModel := m.FromEntityOrder(order)
 
-	if err := dao.db.Create(&orderModel).Error; err != nil {
+	if err := db.Create(&orderModel).Error; err != nil {
 		return err
 	}
 
