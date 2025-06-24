@@ -1,28 +1,37 @@
 package main
 
 import (
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
-	"github.com/gin-gonic/gin"
+
+	conf "github.com/n3xtchen/gin-3at/config"
+	"github.com/n3xtchen/gin-3at/internal/dao"
+	"github.com/n3xtchen/gin-3at/internal/handler"
+	"github.com/n3xtchen/gin-3at/internal/router"
+	"github.com/n3xtchen/gin-3at/internal/service"
 )
 
 func main() {
 
-	router := gin.Default()
+	appConf := conf.InitConfig()
+
+	// Initialize Database
+	mysqlConf := appConf.MySQL
+	db := dao.InitMySQL(mysqlConf.User, mysqlConf.Password, mysqlConf.Host, mysqlConf.Port, mysqlConf.Database)
+
+	// dao
+	orderRepository := dao.NewOrderDao(db)
+
+	// service
+	orderService := service.NewOrderService(db, orderRepository)
+
+	// handler
+	orderHandler := handler.NewOrderHandler(orderService)
 
 	// session
-	store := cookie.NewStore([]byte("something-very-secret"))
-	router.Use(sessions.Sessions("session", store))
+	store := cookie.NewStore([]byte(appConf.Secret))
 
-	{
-		v1 := router.Group("api/v1")
+	// router
+	r := router.SetupRouter(store, orderHandler)
 
-		v1.GET("/ping", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "pong",
-			})
-		})
-	}
-
-	router.Run() // 监听并在 0.0.0.0:8080 上启动服务
+	r.Run(":" + appConf.Port) // 监听并在 0.0.0.0:8080 上启动服务
 }

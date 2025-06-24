@@ -7,7 +7,10 @@ import (
 )
 
 type Config struct {
-	MySQL MySQLConfig
+	Port   string `env:"APP_PORT" envDefault:"8080"`
+	Env    string `env:"APP_ENV" envDefault:"development"`
+	Secret string `env:"APP_SECRET"`
+	MySQL  MySQLConfig
 }
 
 type MySQLConfig struct {
