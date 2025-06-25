@@ -30,7 +30,11 @@ func (order *OrderHandler) Save(c *gin.Context) {
 		return
 	}
 
-	order.OrderService.CreateOrder(orderReq.ToEntity())
+	err := order.OrderService.CreateOrder(orderReq.ToEntity())
 
-	c.JSON(http.StatusOK, gin.H{"message": "Order created successfully"})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order"})
+	} else {
+		c.JSON(http.StatusCreated, gin.H{"message": "Order created successfully"})
+	}
 }

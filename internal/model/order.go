@@ -50,16 +50,16 @@ func (model Order) ToEntity() e.Order {
 }
 
 func FromEntityOrder(entity *e.Order) *Order {
-	items := make([]OrderItem, len(entity.Items))
-	for i, item := range entity.Items {
-		items[i] = FromEntityOrderItem(item)
-	}
+	// items := make([]OrderItem, len(entity.Items))
+	// for i, item := range entity.Items {
+	// 	items[i] = FromEntityOrderItem(item)
+	// }
 	return &Order{
-		Model:       gorm.Model{ID: uint(entity.ID)},
-		OrderNum:    entity.OrderNumber,
-		BuyerID:     uint(entity.BuyerID),
-		Address:     FromEntityAddress(entity.Address), // Address should be set separately
-		Items:       items,
+		Model:    gorm.Model{ID: uint(entity.ID)},
+		OrderNum: entity.OrderNumber,
+		BuyerID:  uint(entity.BuyerID),
+		// Address:     FromEntityAddress(entity.Address), // Address should be set separately
+		// Items:       items,
 		Amount:      entity.Amount,
 		Status:      uint(entity.Status),
 		Remark:      entity.Remark,

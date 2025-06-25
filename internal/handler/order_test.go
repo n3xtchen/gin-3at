@@ -22,7 +22,7 @@ func TestOrderHandler_Save(t *testing.T) {
 	orderHandler.Save(ctx)
 
 	// Check the response status code
-	if w.Code != http.StatusOK {
+	if w.Code != http.StatusCreated {
 		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Code)
 	}
 
@@ -46,7 +46,4 @@ func TestOrderDTO(t *testing.T) {
 	if err := ctx.ShouldBindJSON(&orderReq); err != nil {
 		t.Fatalf("Failed to bind JSON: %v", err)
 	}
-
-	t.Logf("OrderReq: %+v", orderReq)
-	t.Logf("OrderEntity: %+v", orderReq.ToEntity())
 }
