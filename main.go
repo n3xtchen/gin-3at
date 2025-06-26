@@ -6,6 +6,7 @@ import (
 	conf "github.com/n3xtchen/gin-3at/config"
 	"github.com/n3xtchen/gin-3at/internal/dao"
 	"github.com/n3xtchen/gin-3at/internal/handler"
+	"github.com/n3xtchen/gin-3at/internal/pkg"
 	"github.com/n3xtchen/gin-3at/internal/router"
 	"github.com/n3xtchen/gin-3at/internal/service"
 )
@@ -16,7 +17,7 @@ func main() {
 
 	// Initialize Database
 	mysqlConf := appConf.MySQL
-	db := dao.InitMySQL(mysqlConf.User, mysqlConf.Password, mysqlConf.Host, mysqlConf.Port, mysqlConf.Database)
+	db := pkg.InitMySQL(mysqlConf.User, mysqlConf.Password, mysqlConf.Host, mysqlConf.Port, mysqlConf.Database)
 
 	// dao
 	orderRepository := dao.NewOrderDao(db)

@@ -5,9 +5,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/n3xtchen/gin-3at/internal/dao"
 	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
 	repo "github.com/n3xtchen/gin-3at/internal/domain/repository"
+	"github.com/n3xtchen/gin-3at/internal/pkg"
 )
 
 type OrderService interface {
@@ -32,7 +32,7 @@ func NewOrderService(db *gorm.DB, orderRepo repo.OrderRepository) OrderService {
 
 func (s *OrderServiceImp) CreateOrder(order *e.Order) error {
 	err := s.db.Transaction(func(tx *gorm.DB) error {
-		ctx := dao.WithTxToContext(context.Background(), tx)
+		ctx := pkg.WithTxToContext(context.Background(), tx)
 		return s.OrderRepo.Save(ctx, order)
 	})
 

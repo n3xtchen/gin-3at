@@ -9,6 +9,7 @@ import (
 	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
 	repo "github.com/n3xtchen/gin-3at/internal/domain/repository"
 	m "github.com/n3xtchen/gin-3at/internal/model"
+	"github.com/n3xtchen/gin-3at/internal/pkg"
 )
 
 type OrderDao struct {
@@ -25,7 +26,7 @@ func NewOrderDao(db *gorm.DB) repo.OrderRepository {
 // CreateOrder creates a new order with the given details.
 func (dao *OrderDao) Save(ctx context.Context, order *e.Order) error {
 
-	db := GetDBFromContext(ctx, dao.db)
+	db := pkg.GetDBFromContext(ctx, dao.db)
 
 	// todo: Validate the order, address, and items.
 
@@ -34,8 +35,6 @@ func (dao *OrderDao) Save(ctx context.Context, order *e.Order) error {
 	if err := db.Create(&addresModel).Error; err != nil {
 		return err
 	}
-
-	log.Printf("Address created successfully with ID: %d", addresModel.ID)
 
 	orderModel := m.FromEntityOrder(order)
 	orderModel.AddressID = addresModel.ID
@@ -51,7 +50,6 @@ func (dao *OrderDao) Save(ctx context.Context, order *e.Order) error {
 		if err := db.Create(&orderItemModel).Error; err != nil {
 			return err
 		}
-		log.Printf("Order item created successfully with ID: %d", orderItemModel.ID)
 	}
 
 	// 新的值更新 order 实体的值
