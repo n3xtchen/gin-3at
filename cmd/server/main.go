@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gin-contrib/sessions/cookie"
 
-	conf "github.com/n3xtchen/gin-3at/config"
+	conf "github.com/n3xtchen/gin-3at/internal/config"
 	"github.com/n3xtchen/gin-3at/internal/dao"
 	"github.com/n3xtchen/gin-3at/internal/handler"
 	"github.com/n3xtchen/gin-3at/internal/pkg"
@@ -19,9 +19,6 @@ import (
 // @contact.name   n3xtchen
 // @contact.url    http://n3xtchen.github.io/n3xtchen
 // @contact.email  echenwen@gmail.com
-
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host      localhost:8080
 // @BasePath  /api/v1

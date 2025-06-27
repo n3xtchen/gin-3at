@@ -6,7 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 
-	conf "github.com/n3xtchen/gin-3at/config"
+	conf "github.com/n3xtchen/gin-3at/internal/config"
 	m "github.com/n3xtchen/gin-3at/internal/model"
 	"github.com/n3xtchen/gin-3at/internal/pkg"
 	s "github.com/n3xtchen/gin-3at/internal/seed"
