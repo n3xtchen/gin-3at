@@ -21,20 +21,31 @@ func NewOrderHandler(orderService service.OrderService) *OrderHandler {
 	}
 }
 
-// CreateOrder handles the creation of a new order.
+// CreateOrder handles the creation creationof a new order.
+// @Summary Create a new order
+// @Schemes http https
+// @Description
+// @Tags orders
+// @Accept json
+// @Produce json
+// @Param order body dto.CreateOrderReq true "Order details"
+// @Success 201 {object} dto.APIResponse "Order created successfully"
+// @Failure 400 {object} dto.APIResponse "Invalid request parameters"
+// @Failure 500 {object} dto.APIResponse "Inyernal server error"
+// @Router /orders [post]
 func (order *OrderHandler) Save(c *gin.Context) {
 	// validate it, and then call the OrderDao to create the order.
 	var orderReq dto.CreateOrderReq
 	if err := c.ShouldBindJSON(&orderReq); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, dto.APIResponse{Code: dto.CodeParamError, Message: err.Error()})
 		return
 	}
 
 	err := order.OrderService.CreateOrder(orderReq.ToEntity())
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order"})
+		c.JSON(http.StatusInternalServerError, dto.APIResponse{Code: dto.CodeUnknownError, Message: "Failed to create order"})
 	} else {
-		c.JSON(http.StatusCreated, gin.H{"message": "Order created successfully"})
+		c.JSON(http.StatusCreated, dto.APIResponse{Code: dto.CodeSuccess, Message: "Order created successfully"})
 	}
 }

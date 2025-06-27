@@ -11,6 +11,25 @@ import (
 	"github.com/n3xtchen/gin-3at/internal/service"
 )
 
+// @title           Gin 3at
+// @version         1.0
+// @description     This is a server for Gin 3at API.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   n3xtchen
+// @contact.url    http://n3xtchen.github.io/n3xtchen
+// @contact.email  echenwen@gmail.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
+// @securityDefinitions.basic  BasicAuth
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
 
 	appConf := conf.InitConfig()

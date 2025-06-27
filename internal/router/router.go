@@ -1,9 +1,15 @@
 package router
 
 import (
+	"os"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+
+	docs "github.com/n3xtchen/gin-3at/docs"    // swagger docs
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 
 	"github.com/n3xtchen/gin-3at/internal/handler"
 )
@@ -26,6 +32,11 @@ func SetupRouter(store cookie.Store, orderHandler *handler.OrderHandler) *gin.En
 
 		// orders
 		v1.POST("/orders", orderHandler.Save)
+	}
+
+	if os.Getenv("ENV") != "production" {
+		docs.SwaggerInfo.BasePath = "/api/v1"
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	return router

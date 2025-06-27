@@ -1,0 +1,116 @@
+basePath: /api/v1
+definitions:
+  dto.APIResponse:
+    properties:
+      code:
+        $ref: '#/definitions/dto.Code'
+      message:
+        type: string
+    type: object
+  dto.Code:
+    enum:
+    - 0
+    type: integer
+    x-enum-varnames:
+    - CodeSuccess
+  dto.CreateAddressReq:
+    properties:
+      address:
+        description: Full address
+        maxLength: 50
+        type: string
+      name:
+        description: Name of the person
+        maxLength: 20
+        type: string
+      phone:
+        description: Phone number
+        type: string
+    required:
+    - address
+    - name
+    - phone
+    type: object
+  dto.CreateOrderItemReq:
+    properties:
+      price:
+        description: Price of the product at the time of order
+        type: number
+      product_id:
+        description: ID of the Product
+        type: integer
+      quantity:
+        description: Quantity of the product in the Order
+        minimum: 1
+        type: integer
+    required:
+    - price
+    - product_id
+    - quantity
+    type: object
+  dto.CreateOrderReq:
+    properties:
+      address:
+        $ref: '#/definitions/dto.CreateAddressReq'
+      amount:
+        description: Total amount of the order
+        type: number
+      order_items:
+        items:
+          $ref: '#/definitions/dto.CreateOrderItemReq'
+        type: array
+    required:
+    - address
+    - amount
+    - order_items
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: echenwen@gmail.com
+    name: n3xtchen
+    url: http://n3xtchen.github.io/n3xtchen
+  description: This is a server for Gin 3at API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Gin 3at
+  version: "1.0"
+paths:
+  /orders:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order details
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Order created successfully
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Inyernal server error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Create a new order
+      tags:
+      - orders
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
