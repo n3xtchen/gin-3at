@@ -3,7 +3,6 @@ package testutils
 import (
 	"log"
 
-	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 
 	conf "github.com/n3xtchen/gin-3at/internal/config"
@@ -14,14 +13,8 @@ import (
 
 func InitTestConfig() *conf.Config {
 	log.Println("setup config")
-	if err := godotenv.Load("../../test.env"); err != nil {
-		log.Println(err)
-		log.Println("No .env file found or failed to load.")
-	}
-
 	testConf := conf.InitConfig()
 	log.Println("Config setup completed successfully.")
-
 	return testConf
 }
 
