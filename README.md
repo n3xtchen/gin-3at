@@ -6,7 +6,7 @@
 
 ### 环境变量设置
 
-```
+```bash
 cp .env.example .env
 ```
 
@@ -16,13 +16,19 @@ cp .env.example .env
 
 ### 文档生成
 
-```
+```bash
 swag init -g cmd/server/main.go
+```
+
+### 启动热重载服务
+
+```bash
+air -c .air.toml
 ```
 
 ### 执行测试脚本
 
-```
+```bash
 godotenv -f .env go test -count=1 ./...
 ```
 
@@ -43,3 +49,4 @@ godotenv -f .env go test -count=1 ./...
 
 - 环境变量管理：joho/godotenv
 - 文档生成工具：swaggo
+- 热重载：cosmtrek/air 
