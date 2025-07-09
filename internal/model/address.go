@@ -9,6 +9,7 @@ import (
 type Address struct {
 	gorm.Model
 	UserID    int    `gorm:"not null"`
+	User      User   `gorm:"foreignKey:UserID;references:ID"`
 	Name      string `gorm:"type:varchar(20) not null"`
 	Phone     string `gorm:"type:varchar(11) not null"`
 	Address   string `gorm:"type:varchar(50) not null"`

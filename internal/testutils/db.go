@@ -21,7 +21,7 @@ func InitTestConfig() *conf.Config {
 func InitTestDB(dbConf *conf.MySQLConfig) *gorm.DB {
 	db := pkg.InitMySQL(dbConf.User, dbConf.Password, dbConf.Host, dbConf.Port, dbConf.Database)
 
-	db.AutoMigrate(&m.Category{}, &m.Product{}, &m.Order{}, &m.OrderItem{}, &m.Address{})
+	db.AutoMigrate(&m.User{}, &m.Category{}, &m.Product{}, &m.Order{}, &m.OrderItem{}, &m.Address{})
 
 	log.Println("Database setup completed successfully.")
 
@@ -31,6 +31,13 @@ func InitTestDB(dbConf *conf.MySQLConfig) *gorm.DB {
 func SeedTestDB(db *gorm.DB) {
 
 	log.Println("Database seeded with initial data.")
+
+	// Seed UserSeed
+	for _, user := range s.UserSeed {
+		if err := db.Create(&user).Error; err != nil {
+			log.Fatalf("Failed to seed user: %v", err)
+		}
+	}
 
 	// Seed Categories
 	for _, category := range s.CategorySeed {
@@ -72,7 +79,7 @@ func SeedTestDB(db *gorm.DB) {
 func TeardownDB(db *gorm.DB) {
 	// seed data is not deleted, but you can drop tables if needed
 	log.Println("teardown DB")
-	if err := db.Migrator().DropTable(&m.Product{}, &m.Category{}, &m.Order{}, &m.OrderItem{}, &m.Address{}); err != nil {
+	if err := db.Migrator().DropTable(&m.Product{}, &m.Category{}, &m.Order{}, &m.OrderItem{}, &m.Address{}, &m.User{}); err != nil {
 		log.Fatalf("Failed to drop tables: %v", err)
 	}
 	log.Println("Tables dropped successfully.")

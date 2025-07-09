@@ -12,6 +12,7 @@ type Order struct {
 	gorm.Model
 	OrderNum    string  // 订单号
 	BuyerID     uint    `gorm:"not null"`
+	User        User    `gorm:"foreignKey:BuyerID;references:ID"`
 	AddressID   uint    `gorm:"not null"`
 	Address     Address `gorm:"foreignKey:AddressID;references:ID"`
 	Amount      float64 `gorm:"not null"`
