@@ -34,6 +34,7 @@ func NewOrderHandler(orderService service.OrderService) *OrderHandler {
 // @Failure 500 {object} dto.APIResponse "Inyernal server error"
 // @Router /orders [post]
 func (order *OrderHandler) Save(c *gin.Context) {
+
 	// validate it, and then call the OrderDao to create the order.
 	var orderReq dto.CreateOrderReq
 	if err := c.ShouldBindJSON(&orderReq); err != nil {

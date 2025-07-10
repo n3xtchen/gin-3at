@@ -13,6 +13,5 @@ var UserSeed = []m.User{
 		Username: "john_doe",
 		Password: "hashed_password_1",
 		Email:    "john_doe@mail.com",
-		Phone:    "1234567890",
 	},
 }
