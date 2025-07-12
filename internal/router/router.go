@@ -14,7 +14,7 @@ import (
 	"github.com/n3xtchen/gin-3at/internal/handler"
 )
 
-func SetupRouter(store cookie.Store, orderHandler *handler.OrderHandler) *gin.Engine {
+func SetupRouter(store cookie.Store, userHandler *handler.UserHandler, orderHandler *handler.OrderHandler) *gin.Engine {
 
 	router := gin.Default()
 
@@ -29,6 +29,12 @@ func SetupRouter(store cookie.Store, orderHandler *handler.OrderHandler) *gin.En
 				"message": "pong",
 			})
 		})
+
+		// User
+		v1.POST("/users/register", userHandler.RegisterUser)
+		v1.GET("/users/login", userHandler.LoginUser)
+		v1.GET("/users/logout", userHandler.LogoutUser)
+		v1.GET("/user/reset_password", userHandler.ResetPassword)
 
 		// orders
 		v1.POST("/orders", orderHandler.Save)

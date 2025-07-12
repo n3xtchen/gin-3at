@@ -36,19 +36,22 @@ func main() {
 	db := pkg.InitMySQL(mysqlConf.User, mysqlConf.Password, mysqlConf.Host, mysqlConf.Port, mysqlConf.Database)
 
 	// dao
+	userRepository := dao.NewUserDao(db)
 	orderRepository := dao.NewOrderDao(db)
 
 	// service
+	userService := service.NewUserService(userRepository)
 	orderService := service.NewOrderService(db, orderRepository)
 
 	// handler
+	userHandler := handler.NewUserHandler(userService)
 	orderHandler := handler.NewOrderHandler(orderService)
 
 	// session
 	store := cookie.NewStore([]byte(appConf.Secret))
 
 	// router
-	r := router.SetupRouter(store, orderHandler)
+	r := router.SetupRouter(store, userHandler, orderHandler)
 
 	r.Run(":" + appConf.Port) // 监听并在 0.0.0.0:8080 上启动服务
 }
