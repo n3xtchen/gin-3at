@@ -59,6 +59,7 @@ func MockJsonPost(c *gin.Context, content interface{}) {
 	// the bytes buffer though doesn't implement io.Closer,
 	// so you wrap it in a no-op closer
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(jsonbytes))
+
 }
 
 type OrderServiceMock struct {
