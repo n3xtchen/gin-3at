@@ -48,7 +48,7 @@ func (user *UserHandler) LoginUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "User logged in successfully", "user": userEntity})
+	c.JSON(200, gin.H{"message": "User logged in successfully", "user": dto.ToLoginUserRes(userEntity)})
 }
 
 // LogoutUser handles user logout requests.

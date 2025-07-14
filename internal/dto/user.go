@@ -31,3 +31,19 @@ type ResetPasswordReq struct {
 	OldPassword string `json:"old_password" binding:"required,min=6,max=20"` // Old Password of the User
 	NewPassword string `json:"new_password" binding:"required,min=6,max=20"` // New Password of the User
 }
+
+type LoginUserRes struct {
+	ID       int    `json:"id"`                                       // ID of the User
+	Username string `json:"username" binding:"required,min=3,max=20"` // Username of the User
+	Password string `json:"password" binding:"required,min=6,max=20"` // Password of the User
+	Email    string `json:"email" binding:"required,email"`           // Email of the User
+}
+
+func ToLoginUserRes(user *e.User) LoginUserRes {
+	return LoginUserRes{
+		ID:       user.ID,
+		Username: user.Username,
+		Password: user.Password,
+		Email:    user.Email,
+	}
+}
