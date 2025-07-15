@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	"github.com/n3xtchen/gin-3at/internal/dto"
@@ -63,8 +64,16 @@ func (user *UserHandler) LoginUser(c *gin.Context) {
 	}
 
 	userEntity, err := user.Service.Login(loginReq.Username, loginReq.Password)
+
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Failed to login user"})
+		return
+	}
+
+	session := sessions.Default(c)
+	session.Set("userID", userEntity.ID)
+	if err := session.Save(); err != nil {
+		c.JSON(500, gin.H{"error": "Failed to save session"})
 		return
 	}
 
@@ -82,15 +91,16 @@ func (user *UserHandler) LoginUser(c *gin.Context) {
 // @Failure 500 {object} dto.APIResponse "Failed to logout user"
 // @Router /user/logout [post]
 func (user *UserHandler) LogoutUser(c *gin.Context) {
-	userID, exists := c.Get("userID")
-	if !exists {
+	session := sessions.Default(c)
+	userID := session.Get("userID")
+	if userID == nil {
 		c.JSON(400, gin.H{"error": "User not found"})
 		return
 	}
 
-	err := user.Service.Logout(userID.(int))
-	if err != nil {
-		c.JSON(500, gin.H{"error": "Failed to logout user"})
+	session.Delete("userID")
+	if err := session.Save(); err != nil {
+		c.JSON(500, gin.H{"error": "Failed to save session"})
 		return
 	}
 

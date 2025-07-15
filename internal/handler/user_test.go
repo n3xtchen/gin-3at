@@ -4,6 +4,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-contrib/sessions"
+
 	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
 	"github.com/n3xtchen/gin-3at/internal/service"
 )
@@ -80,7 +82,7 @@ func TestUserHandler_LoginUser(t *testing.T) {
 	userHandler := NewUserHandler(&MockUserService{}) // Mock the service for testing
 
 	w := httptest.NewRecorder()
-	ctx := GetTestGinContext(w)
+	ctx := GetTestGinContextWithSession(w)
 
 	data := map[string]interface{}{
 		"username": "testuser",
@@ -99,16 +101,21 @@ func TestUserHandler_LoginUser(t *testing.T) {
 		t.Errorf("Expected response body to be 'User logged in successfully', got '%s'", w.Body.String())
 	}
 	t.Log("Response Body:", w.Body.String())
+
 }
 
 func TestUserHandler_LogoutUser(t *testing.T) {
 	userHandler := NewUserHandler(&MockUserService{}) // Mock the service for testing
 
 	w := httptest.NewRecorder()
-	ctx := GetTestGinContext(w)
+	ctx := GetTestGinContextWithSession(w)
 
 	// Simulate setting userID in context
-	ctx.Set("userID", 1)
+	session := sessions.Default(ctx)
+	session.Set("userID", 1)
+	session.Save()
+
+	t.Log("Session before logout:", session.Get("userID"))
 
 	userHandler.LogoutUser(ctx)
 

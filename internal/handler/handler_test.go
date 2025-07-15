@@ -8,6 +8,8 @@ import (
 	"net/http/httptest"
 	"net/url"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +21,22 @@ func GetTestGinContext(w *httptest.ResponseRecorder) *gin.Context {
 		Header: make(http.Header),
 		URL:    &url.URL{},
 	}
+	return ctx
+}
+
+func GetTestGinContextWithSession(w *httptest.ResponseRecorder) *gin.Context {
+	gin.SetMode(gin.TestMode)
+
+	ctx, _ := gin.CreateTestContext(w)
+
+	store := cookie.NewStore([]byte("secret"))
+
+	ctx.Request = &http.Request{
+		Header: make(http.Header),
+		URL:    &url.URL{},
+	}
+
+	sessions.Sessions("mysession", store)(ctx)
 	return ctx
 }
 

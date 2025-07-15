@@ -14,6 +14,18 @@ import (
 	"github.com/n3xtchen/gin-3at/internal/handler"
 )
 
+func AuthRequired() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		if session.Get("userID") == nil {
+			c.JSON(401, gin.H{"error": "Unauthorized"})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
 func SetupRouter(store cookie.Store, userHandler *handler.UserHandler, orderHandler *handler.OrderHandler) *gin.Engine {
 
 	router := gin.Default()
@@ -36,8 +48,12 @@ func SetupRouter(store cookie.Store, userHandler *handler.UserHandler, orderHand
 		v1.GET("/users/logout", userHandler.LogoutUser)
 		v1.GET("/user/reset_password", userHandler.ResetPassword)
 
-		// orders
-		v1.POST("/orders", orderHandler.Save)
+		authed := v1.Group("/")
+		authed.Use(AuthRequired())
+		{
+			// orders
+			authed.POST("/orders", orderHandler.Save)
+		}
 	}
 
 	if os.Getenv("ENV") != "production" {
