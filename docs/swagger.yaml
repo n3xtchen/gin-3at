@@ -64,6 +64,64 @@ definitions:
     - amount
     - order_items
     type: object
+  dto.LoginUserReq:
+    properties:
+      password:
+        description: Password of the User
+        maxLength: 20
+        minLength: 6
+        type: string
+      username:
+        description: Username of the User
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.RegisterUserReq:
+    properties:
+      email:
+        description: Email of the User
+        type: string
+      password:
+        description: Password of the User
+        maxLength: 20
+        minLength: 6
+        type: string
+      username:
+        description: Username of the User
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  dto.ResetPasswordReq:
+    properties:
+      new_password:
+        description: New Password of the User
+        maxLength: 20
+        minLength: 6
+        type: string
+      old_password:
+        description: Old Password of the User
+        maxLength: 20
+        minLength: 6
+        type: string
+      username:
+        description: Username of the User
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - new_password
+    - old_password
+    - username
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -107,6 +165,119 @@ paths:
       summary: Create a new order
       tags:
       - orders
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user with username and Password
+      parameters:
+      - description: User login details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Failed to login user
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Login a user
+      tags:
+      - user
+  /user/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout a user by clearing their session
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged out successfully
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: User not found
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Failed to logout user
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Logout a user
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username, password, and email
+      parameters:
+      - description: User registration details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterUserReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered successfully
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Failed to register user
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Register a new user
+      tags:
+      - user
+  /user/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password with username and new Password
+      parameters:
+      - description: User password reset details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ResetPasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password reset successfully
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Failed to reset password
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Reset user Password
+      tags:
+      - user
 securityDefinitions:
   BasicAuth:
     type: basic

@@ -64,6 +64,179 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Login a user with username and Password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Login a user",
+                "parameters": [
+                    {
+                        "description": "User login details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to login user",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "post": {
+                "description": "Logout a user by clearing their session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Logout a user",
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to logout user",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "description": "Register a new user with username, password, and email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User registration details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RegisterUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to register user",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/reset-password": {
+            "post": {
+                "description": "Reset user password with username and new Password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Reset user Password",
+                "parameters": [
+                    {
+                        "description": "User password reset details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ResetPasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password reset successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to reset password",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -154,6 +327,81 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/dto.CreateOrderItemReq"
                     }
+                }
+            }
+        },
+        "dto.LoginUserReq": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "Password of the User",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 6
+                },
+                "username": {
+                    "description": "Username of the User",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 3
+                }
+            }
+        },
+        "dto.RegisterUserReq": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "description": "Email of the User",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Password of the User",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 6
+                },
+                "username": {
+                    "description": "Username of the User",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 3
+                }
+            }
+        },
+        "dto.ResetPasswordReq": {
+            "type": "object",
+            "required": [
+                "new_password",
+                "old_password",
+                "username"
+            ],
+            "properties": {
+                "new_password": {
+                    "description": "New Password of the User",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 6
+                },
+                "old_password": {
+                    "description": "Old Password of the User",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 6
+                },
+                "username": {
+                    "description": "Username of the User",
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 3
                 }
             }
         }

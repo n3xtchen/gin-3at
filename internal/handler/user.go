@@ -18,6 +18,16 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 }
 
 // RegisterUser handles user registration requests.
+// @Summary Register a new user
+// @Description Register a new user with username, password, and email
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param user body dto.RegisterUserReq true "User registration details"
+// @Success 201 {object} dto.APIResponse "User registered successfully"
+// @Failure 400 {object} dto.APIResponse "Invalid request parameters"
+// @Failure 500 {object} dto.APIResponse "Failed to register user"
+// @Router /user/register [post]
 func (user *UserHandler) RegisterUser(c *gin.Context) {
 	var userReq dto.RegisterUserReq
 	if err := c.ShouldBindJSON(&userReq); err != nil {
@@ -35,6 +45,16 @@ func (user *UserHandler) RegisterUser(c *gin.Context) {
 }
 
 // LoginUser handles user login requests.
+// @Summary Login a user
+// @Description Login a user with username and Password
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param user body dto.LoginUserReq true "User login details"
+// @Success 200 {object} dto.APIResponse "User logged in successfully"
+// @Failure 400 {object} dto.APIResponse "Invalid request parameters"
+// @Failure 500 {object} dto.APIResponse "Failed to login user"
+// @Router /user/login [post]
 func (user *UserHandler) LoginUser(c *gin.Context) {
 	var loginReq dto.LoginUserReq
 	if err := c.ShouldBindJSON(&loginReq); err != nil {
@@ -52,6 +72,15 @@ func (user *UserHandler) LoginUser(c *gin.Context) {
 }
 
 // LogoutUser handles user logout requests.
+// @Summary Logout a user
+// @Description Logout a user by clearing their session
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {object} dto.APIResponse "User logged out successfully"
+// @Failure 400 {object} dto.APIResponse "User not found"
+// @Failure 500 {object} dto.APIResponse "Failed to logout user"
+// @Router /user/logout [post]
 func (user *UserHandler) LogoutUser(c *gin.Context) {
 	userID, exists := c.Get("userID")
 	if !exists {
@@ -69,6 +98,16 @@ func (user *UserHandler) LogoutUser(c *gin.Context) {
 }
 
 // ResetPassword handles user password reset requests.
+// @Summary Reset user Password
+// @Description Reset user password with username and new Password
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param user body dto.ResetPasswordReq true "User password reset details"
+// @Success 200 {object} dto.APIResponse "Password reset successfully"
+// @Failure 400 {object} dto.APIResponse "Invalid request parameters"
+// @Failure 500 {object} dto.APIResponse "Failed to reset password"
+// @Router /user/reset-password [post]
 func (user *UserHandler) ResetPassword(c *gin.Context) {
 	var resetReq dto.ResetPasswordReq
 	if err := c.ShouldBindJSON(&resetReq); err != nil {
