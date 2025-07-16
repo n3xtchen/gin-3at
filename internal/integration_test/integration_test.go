@@ -30,16 +30,21 @@ func setupTestServer() *gin.Engine {
 	// Seed Categories
 	testutils.SeedTestDB(db)
 
+	store := cookie.NewStore([]byte(appConf.Secret))
+
 	// dao
 	orderRepository := dao.NewOrderDao(db.Debug())
+	userRepository := dao.NewUserDao(db.Debug())
 
 	// service
 	orderService := service.NewOrderService(db, orderRepository)
+	userService := service.NewUserService(userRepository)
 
-	store := cookie.NewStore([]byte(appConf.Secret))
+	// handler
 	orderHandler := handler.NewOrderHandler(orderService)
+	userHandler := handler.NewUserHandler(userService)
 
-	r := router.SetupRouter(store, orderHandler)
+	r := router.SetupRouter(store, userHandler, orderHandler)
 
 	return r
 }

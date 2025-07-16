@@ -46,12 +46,12 @@ func NewUserService(userRepo repo.UserRepository) UserService {
 func (s *UserServiceImp) Register(user *e.User) error {
 
 	// Check if the user already existingUser
-	_, err := s.UserRepo.FindBy(user.Username)
-	if err != nil {
+	existingUser, _ := s.UserRepo.FindBy(user.Username)
+	if existingUser != nil {
 		return ErrUserRegistrationFailed
 	}
 
-	err = s.UserRepo.Create(user)
+	err := s.UserRepo.Create(user)
 	if err != nil {
 		return ErrUserRegistrationFailed
 	}

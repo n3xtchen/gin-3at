@@ -44,7 +44,7 @@ func SetupRouter(store cookie.Store, userHandler *handler.UserHandler, orderHand
 
 		// User
 		v1.POST("/users/register", userHandler.RegisterUser)
-		v1.GET("/users/login", userHandler.LoginUser)
+		v1.POST("/users/login", userHandler.LoginUser)
 		v1.GET("/users/logout", userHandler.LogoutUser)
 		v1.GET("/user/reset_password", userHandler.ResetPassword)
 
