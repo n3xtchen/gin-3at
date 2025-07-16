@@ -29,7 +29,7 @@ func GetTestGinContextWithSession(w *httptest.ResponseRecorder) *gin.Context {
 
 	ctx, _ := gin.CreateTestContext(w)
 
-	store := cookie.NewStore([]byte("secret"))
+	store := cookie.NewStore([]byte("1234567890abcdef"))
 
 	ctx.Request = &http.Request{
 		Header: make(http.Header),

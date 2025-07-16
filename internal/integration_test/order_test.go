@@ -37,6 +37,10 @@ func TestOrderIntegration(t *testing.T) {
 	jsonBody, _ := json.Marshal(orderMock)
 
 	req, _ := http.NewRequest("POST", "/api/v1/orders", bytes.NewBuffer(jsonBody))
+	// Add the login cookie to the Request
+	for _, cookie := range loginCookie {
+		req.AddCookie(cookie)
+	}
 
 	req.Header.Set("Content-Type", "application/json")
 

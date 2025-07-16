@@ -5,6 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-contrib/sessions"
+
 	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
 	"github.com/n3xtchen/gin-3at/internal/dto"
 )
@@ -64,7 +66,14 @@ func TestOrderHandler_Save(t *testing.T) {
 	orderHandler := NewOrderHandler(&OrderServiceMock{}) // Pass a mock or real service as needed
 
 	w := httptest.NewRecorder()
-	ctx := GetTestGinContext(w)
+	ctx := GetTestGinContextWithSession(w)
+
+	// Simulate setting userID in context
+	session := sessions.Default(ctx)
+	session.Set("userID", 1)
+	session.Save()
+
+	t.Log("Session before logout:", session.Get("userID"))
 
 	data := orderMock
 

@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	"github.com/n3xtchen/gin-3at/internal/dto"
@@ -42,7 +43,18 @@ func (order *OrderHandler) Save(c *gin.Context) {
 		return
 	}
 
-	err := order.OrderService.CreateOrder(orderReq.ToEntity())
+	session := sessions.Default(c)
+	userID := session.Get("userID")
+	if userID == nil {
+		c.JSON(400, gin.H{"error": "User not found"})
+		return
+	}
+
+	orderEntity := orderReq.ToEntity()
+	orderEntity.Address.UserID = userID.(int) // Assuming Address has a UserID field
+	orderEntity.BuyerID = userID.(int)
+
+	err := order.OrderService.CreateOrder(orderEntity)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.APIResponse{Code: dto.CodeUnknownError, Message: "Failed to create order"})
