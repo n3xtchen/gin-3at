@@ -55,16 +55,22 @@ func setupTestServer() *gin.Engine {
 	// dao
 	orderRepository := dao.NewOrderDao(db.Debug())
 	userRepository := dao.NewUserDao(db.Debug())
+	categoryRepository := dao.NewCategoryDao(db.Debug())
+	productRepository := dao.NewProductDao(db.Debug())
 
 	// service
 	orderService := service.NewOrderService(db, orderRepository)
 	userService := service.NewUserService(userRepository)
+	categoryService := service.NewCategoryService(categoryRepository)
+	productService := service.NewProductService(productRepository)
 
 	// handler
 	orderHandler := handler.NewOrderHandler(orderService)
 	userHandler := handler.NewUserHandler(userService)
+	categoryHandler := handler.NewCategoryHandler(categoryService)
+	productHandler := handler.NewProductHandler(productService)
 
-	r := router.SetupRouter(store, userHandler, orderHandler)
+	r := router.SetupRouter(store, userHandler, orderHandler, categoryHandler, productHandler)
 
 	return r
 }

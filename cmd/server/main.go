@@ -38,20 +38,26 @@ func main() {
 	// dao
 	userRepository := dao.NewUserDao(db)
 	orderRepository := dao.NewOrderDao(db)
+	categoryRepository := dao.NewCategoryDao(db)
+	productRepository := dao.NewProductDao(db)
 
 	// service
 	userService := service.NewUserService(userRepository)
 	orderService := service.NewOrderService(db, orderRepository)
+	categoryService := service.NewCategoryService(categoryRepository)
+	productService := service.NewProductService(productRepository)
 
 	// handler
 	userHandler := handler.NewUserHandler(userService)
 	orderHandler := handler.NewOrderHandler(orderService)
+	categoryHandler := handler.NewCategoryHandler(categoryService)
+	productHandler := handler.NewProductHandler(productService)
 
 	// session
 	store := cookie.NewStore([]byte(appConf.Secret))
 
 	// router
-	r := router.SetupRouter(store, userHandler, orderHandler)
+	r := router.SetupRouter(store, userHandler, orderHandler, categoryHandler, productHandler)
 
 	r.Run(":" + appConf.Port) // 监听并在 0.0.0.0:8080 上启动服务
 }

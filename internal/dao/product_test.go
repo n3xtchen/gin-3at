@@ -9,7 +9,7 @@ func TestProductDaoGetProducts(t *testing.T) {
 	dao := NewProductDao(db)
 
 	// Get all products
-	products, err := dao.GetProducts(10, 0)
+	products, err := dao.List()
 	if err != nil {
 		t.Fatalf("Failed to get products: %v", err)
 	}

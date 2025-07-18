@@ -20,6 +20,88 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/categories": {
+            "get": {
+                "description": "Get all Categories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get All GetAllCategories",
+                "responses": {
+                    "200": {
+                        "description": "List of categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.CategroyRes"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve categories",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/categories/{category_id}": {
+            "get": {
+                "description": "Get a category by its Is",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get Category by Is",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CategroyRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "post": {
                 "consumes": [
@@ -58,6 +140,88 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Inyernal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "description": "Get all Products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get All Products",
+                "responses": {
+                    "200": {
+                        "description": "List of products",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ProductRes"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve products",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{product_id}": {
+            "get": {
+                "description": "Get a product by its IsDefault",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get Product by Is",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ProductRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/dto.APIResponse"
                         }
@@ -251,6 +415,23 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CategroyRes": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "description": "ID of the CategoryID",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "Description of the CategoryID",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name of the CategoryID",
+                    "type": "string"
+                }
+            }
+        },
         "dto.Code": {
             "type": "integer",
             "enum": [
@@ -348,6 +529,39 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 20,
                     "minLength": 3
+                }
+            }
+        },
+        "dto.ProductRes": {
+            "type": "object",
+            "properties": {
+                "product_category_id": {
+                    "description": "Category ID of the ProductID",
+                    "type": "integer"
+                },
+                "product_category_name": {
+                    "description": "Category Name of the ProductID",
+                    "type": "string"
+                },
+                "product_desc": {
+                    "description": "Description of the ProductID",
+                    "type": "string"
+                },
+                "product_id": {
+                    "description": "ID of the ProductID",
+                    "type": "integer"
+                },
+                "product_image": {
+                    "description": "Image URL of the ProductID",
+                    "type": "string"
+                },
+                "product_name": {
+                    "description": "Name of the ProductID",
+                    "type": "string"
+                },
+                "product_price": {
+                    "description": "Price of the ProductID",
+                    "type": "number"
                 }
             }
         },

@@ -26,7 +26,7 @@ func AuthRequired() gin.HandlerFunc {
 	}
 }
 
-func SetupRouter(store cookie.Store, userHandler *handler.UserHandler, orderHandler *handler.OrderHandler) *gin.Engine {
+func SetupRouter(store cookie.Store, userHandler *handler.UserHandler, orderHandler *handler.OrderHandler, categoryHandler *handler.CategoryHandler, productHandler *handler.ProductHandler) *gin.Engine {
 
 	router := gin.Default()
 
@@ -47,6 +47,14 @@ func SetupRouter(store cookie.Store, userHandler *handler.UserHandler, orderHand
 		v1.POST("/users/login", userHandler.LoginUser)
 		v1.GET("/users/logout", userHandler.LogoutUser)
 		v1.GET("/user/reset_password", userHandler.ResetPassword)
+
+		// Categories
+		v1.GET("/categories/:id", categoryHandler.GetCategoryByID)
+		v1.GET("/categories", categoryHandler.GetAllCategories)
+
+		// Products
+		v1.GET("/products/:id", productHandler.GetProductByID)
+		v1.GET("/products", productHandler.GetAllProducts)
 
 		authed := v1.Group("/")
 		authed.Use(AuthRequired())
