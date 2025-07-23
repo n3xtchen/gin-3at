@@ -76,6 +76,100 @@ gin-3at
 
 ## 架构图
 
+
+
+```mermaid
+graph TD
+  subgraph Controller
+    A[Controller]
+  end
+  subgraph Service Layer
+    B[Service]
+  end
+  subgraph Domain Layer
+    C1[Entity]
+    C2[Value Object]
+    C3[Domain Service]
+  end
+  subgraph Infra Layer
+  	D[Repository/DAO]
+    DB[(Database)]
+    %% MQ[(Message Queue)]
+    %% Cache[(Cache)]
+    %% Third[Third-party Service]
+  end
+
+  A --> B
+  B --> C1
+  B --> C2
+  B --> C3
+  C1 --> D
+  C2 --> D
+  C3 --> D
+  D --> DB
+```
+
+```mermaid
+flowchart LR
+  %% 外部
+  Client[应用终端]
+  APIGW[API网关]
+
+  %% 系统主框
+  subgraph 系统
+    subgraph 用户接口层
+      subgraph Facade[facade]
+        FacadeInterface[接口]
+        FacadeImpl[实现]
+      end
+    end
+
+    subgraph 应用层
+      AppService[应用服务]
+      %% AppRepoPort[仓储接口]
+    end
+
+    subgraph 领域层
+      DomainService[领域服务]
+
+      subgraph AggregatesA[聚合A]
+        ValueObjA[实体/值对象A]
+      end
+      subgraph AggregatesB[聚合B]
+        ValueObjB[实体/值对象B]
+      end
+      DomainRepoPort[仓储接口]
+    end
+
+    subgraph 基础层
+      RepoImplDB[仓储实现]
+      DB[(DB)]
+      %% RepoImplFile[仓储实现]
+      %% File[文件]
+    end
+  end
+
+  %% 关系
+  Client --> APIGW
+  APIGW --> FacadeInterface
+  FacadeInterface --> FacadeImpl
+  FacadeImpl --> AppService
+
+  AppService --> DomainService
+
+  DomainService --> AggregatesA
+  DomainService --> AggregatesB
+  AggregatesA --> ValueObjA
+  AggregatesB --> ValueObjB
+  AggregatesA --> DomainRepoPort
+  AggregatesB --> DomainRepoPort
+
+  DomainRepoPort --> RepoImplDB
+  %% AppRepoPort --> RepoImplFile
+  RepoImplDB --> DB
+  %% RepoImplFile --> File
+```
+
 ## 功能
 
 - [ ] 用户信息管理
