@@ -1,5 +1,7 @@
 # gin-3at
 
+## 1. 目的与背景
+
 餐饮电商的后端服务，采用单体应用架构，集成用户、商品、库存、订单和支付五大业务模块，实现基础电商功能，便于后续快速迭代和扩展。
 
 - 领域驱动设计（DDD）架构
@@ -9,88 +11,34 @@
 - 提供数据种子功能，便于开发和测试
 - 提供测试工具包，便于编写和执行测试用例
 
-## 技术选型
+## 2. 整体架构概览
 
-- 语言：Go 1.24.4
-- 数据：Mysql
-- 环境变量管理：[joho/godotenv](https://github.com/joho/godotenv)
-- API 文档：Swagger
-- 支持热重载：[cosmtrek/air](https://github.com/air-verse/air) 
-- 工具：Makefile、Docker
-- 测试：Go test
+### 2.1. 架构图
 
-| 技术/组件                       | 版本    | 说明                   |
-| ------------------------------- | ------- | ---------------------- |
-| github.com/caarlos0/env/v11     | v11.3.1 | 环境变量管理           |
-| github.com/gin-contrib/sessions | v1.0.4  | Gin 会话管理中间件     |
-| github.com/gin-gonic/gin        | v1.10.1 | Web 框架（HTTP API）   |
-| github.com/swaggo/files         | v1.0.1  | Swagger 静态文件支持   |
-| github.com/swaggo/gin-swagger   | v1.6.0  | Gin 集成 Swagger UI    |
-| github.com/swaggo/swag          | v1.16.4 | Swagger 注解与文档生成 |
-| gorm.io/driver/mysql            | v1.6.0  | GORM MySQL 驱动        |
-| gorm.io/gorm                    | v1.30.0 | ORM 框架               |
-
-## Quick Start 
-
-### 环境变量设置
-
-```bash
-cp .env.example .env
+```mermaid
+flowchart TD
+    FE[前端客户端] --> API[Gin]
+    API --> APP[单体应用]
+    APP --> USERS[用户模块]
+    APP --> PRODUCTS[商品模块]
+    APP --> INVENTORY[库存模块]
+    APP --> ORDERS[订单模块]
+    APP --> PAYMENTS[支付模块]
+    APP --> MYSQL[(MySQL数据库)]
+    APP --> REDIS[(Redis缓存)]
+    USERS --> MYSQL
+    PRODUCTS --> MYSQL
+    INVENTORY --> MYSQL
+    ORDERS --> MYSQL
+    PAYMENTS --> MYSQL
+    USERS --> REDIS
+    PRODUCTS --> REDIS
+    INVENTORY --> REDIS
+    ORDERS --> REDIS
+    PAYMENTS --> REDIS
 ```
 
-然后修改其中的配置项。
-
-- 数据库连接配置
-
-### 文档生成
-
-```bash
-swag init -g cmd/server/main.go
-```
-
-### 启动热重载服务
-
-```bash
-air -c .air.toml
-```
-
-### 执行测试脚本
-
-```bash
-godotenv -f .env go test -count=1 ./...
-```
-
-> `-count=1` 参数用于确保每次测试都从头开始执行，而不是使用缓存的结果。在执行 dao 测试需要。
-
-## 目录结构
-
-```
-gin-3at
-├── cmd                         # 主程序入口
-├── docs                        # 文档相关 
-├── go.mod                      # Go 模块文件
-├── go.sum                      # Go 模块依赖文件
-├── .air.toml                   # Air 热重载配置文件
-├── .env.example                # 环境变量配置文件
-├── internal                    # 内部包
-│   ├── config                  # 配置管理
-│   ├── router                  # 路由配置
-│   ├── dto                     # 数据传输对象
-│   ├── handler                 # HTTP 处理器
-│   ├── service                 # 服务层
-│   ├── domain                  # 领域模型
-│   ├── dao                     # 数据访问对象
-│   ├── model                   # 数据模型(po)
-│   ├── pkg                     # 公共包
-│   ├── seed                    # 数据库种子数据
-│   ├── integration_test        # 集成测试
-│   └── testutils               # 测试工具
-└── README.md                   # 项目说明文档
-```
-
-## 架构图
-
-
+### 2.2. DDD 架构
 
 ```mermaid
 flowchart TD
@@ -153,7 +101,104 @@ flowchart TD
  
 ```
 
-## 功能
+### 2.2 架构模式说明
+
+- 单体应用架构：所有功能模块集成在同一进程中，统一路由、统一数据库连接。
+- RESTful API，JSON 数据格式。
+- 可通过配置决定端口、数据库连接等参数。
+
+## 3. 系统模块划分
+
+| 模块 | 主要职责                       | 主要接口            |
+| ---- | ------------------------------ | ------------------- |
+| 用户 | 注册、登录、信息管理、权限控制 | /api/v1/users/*     |
+| 商品 | 商品管理、分类、上下架         | /api/v1/products/*  |
+| 库存 | 库存查询、锁定、扣减           | /api/v1/inventory/* |
+| 订单 | 下单、订单查询、状态流转       | /api/v1/orders/*    |
+| 支付 | 发起支付、支付回调、退款       | /api/v1/payments/*  |
+
+## 4. 技术选型
+
+- 语言：Go 1.24.4
+- 数据：Mysql
+- 环境变量管理：[joho/godotenv](https://github.com/joho/godotenv)
+- API 文档：Swagger
+- 支持热重载：[cosmtrek/air](https://github.com/air-verse/air) 
+- 工具：Makefile、Docker
+- 测试：Go test
+
+### 4.1. Go 库
+
+| 技术/组件                       | 版本    | 说明                   |
+| ------------------------------- | ------- | ---------------------- |
+| github.com/caarlos0/env/v11     | v11.3.1 | 环境变量管理           |
+| github.com/gin-contrib/sessions | v1.0.4  | Gin 会话管理中间件     |
+| github.com/gin-gonic/gin        | v1.10.1 | Web 框架（HTTP API）   |
+| github.com/swaggo/files         | v1.0.1  | Swagger 静态文件支持   |
+| github.com/swaggo/gin-swagger   | v1.6.0  | Gin 集成 Swagger UI    |
+| github.com/swaggo/swag          | v1.16.4 | Swagger 注解与文档生成 |
+| gorm.io/driver/mysql            | v1.6.0  | GORM MySQL 驱动        |
+| gorm.io/gorm                    | v1.30.0 | ORM 框架               |
+
+## 5. Quick Start 
+
+### 5.1. 环境变量设置
+
+```bash
+cp .env.example .env
+```
+
+然后修改其中的配置项。
+
+- 数据库连接配置
+
+### 5.2. 文档生成
+
+```bash
+swag init -g cmd/server/main.go
+```
+
+### 5.3. 启动热重载服务
+
+```bash
+air -c .air.toml
+```
+
+### 5.4. 执行测试脚本
+
+```bash
+godotenv -f .env go test -count=1 ./...
+```
+
+> `-count=1` 参数用于确保每次测试都从头开始执行，而不是使用缓存的结果。在执行 dao 测试需要。
+
+## 6. 目录结构
+
+```
+gin-3at
+├── cmd                         # 主程序入口
+├── docs                        # 文档相关 
+├── go.mod                      # Go 模块文件
+├── go.sum                      # Go 模块依赖文件
+├── .air.toml                   # Air 热重载配置文件
+├── .env.example                # 环境变量配置文件
+├── internal                    # 内部包
+│   ├── config                  # 配置管理
+│   ├── router                  # 路由配置
+│   ├── dto                     # 数据传输对象
+│   ├── handler                 # HTTP 处理器
+│   ├── service                 # 服务层
+│   ├── domain                  # 领域模型
+│   ├── dao                     # 数据访问对象
+│   ├── model                   # 数据模型(po)
+│   ├── pkg                     # 公共包
+│   ├── seed                    # 数据库种子数据
+│   ├── integration_test        # 集成测试
+│   └── testutils               # 测试工具
+└── README.md                   # 项目说明文档
+```
+
+## 7. 功能
 
 - [ ] 用户信息管理
   - [x] 用户注册
@@ -180,25 +225,4 @@ flowchart TD
   - [ ] 订单取消
 - [ ] 支付集成
 - [ ] 数据统计和分析
-- [ ] 支持多语言和国际化
-
-## 依赖的组件
-
-### 库
-
-- gin
-  - gin-gonic/gin
-  - gin-contrib/sessions
-- db
-  - gorm.io/gorm
-  - gorm.io/driver/mysql
-- 文档工具：swaggo
-  - swaggo/swaggo
-  - swaggo/files
-- 配置管理：caarlos0/env/v11
-
-### 命令行
-
-- 环境变量管理：joho/godotenv
-- 文档生成工具：swaggo
-- 热重载：cosmtrek/air 
+- [ ] 支持多语言和国际化 
