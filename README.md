@@ -1,20 +1,34 @@
 # gin-3at
 
-餐饮电商的后端服务，使用 Gin 框架构建，支持热重载和 Swagger 文档生成。
+餐饮电商的后端服务，采用单体应用架构，集成用户、商品、库存、订单和支付五大业务模块，实现基础电商功能，便于后续快速迭代和扩展。
 
-## 特性
-
-- 使用 Gin 框架构建 RESTful API
-- 支持热重载，使用 Air 工具
-- 使用 GORM 进行数据库操作
-- 使用 Swagger 生成 API 文档
-- 使用环境变量管理配置
 - 领域驱动设计（DDD）架构
   - 分层架构设计，包含路由、处理器、服务、数据访问对象等
   - 支持数据模型和领域模型分离
 - 支持集成测试
 - 提供数据种子功能，便于开发和测试
 - 提供测试工具包，便于编写和执行测试用例
+
+## 技术选型
+
+- 语言：Go 1.24.4
+- 数据：Mysql
+- 环境变量管理：[joho/godotenv](https://github.com/joho/godotenv)
+- API 文档：Swagger
+- 支持热重载：[cosmtrek/air](https://github.com/air-verse/air) 
+- 工具：Makefile、Docker
+- 测试：Go test
+
+| 技术/组件                       | 版本    | 说明                   |
+| ------------------------------- | ------- | ---------------------- |
+| github.com/caarlos0/env/v11     | v11.3.1 | 环境变量管理           |
+| github.com/gin-contrib/sessions | v1.0.4  | Gin 会话管理中间件     |
+| github.com/gin-gonic/gin        | v1.10.1 | Web 框架（HTTP API）   |
+| github.com/swaggo/files         | v1.0.1  | Swagger 静态文件支持   |
+| github.com/swaggo/gin-swagger   | v1.6.0  | Gin 集成 Swagger UI    |
+| github.com/swaggo/swag          | v1.16.4 | Swagger 注解与文档生成 |
+| gorm.io/driver/mysql            | v1.6.0  | GORM MySQL 驱动        |
+| gorm.io/gorm                    | v1.30.0 | ORM 框架               |
 
 ## Quick Start 
 
@@ -79,38 +93,7 @@ gin-3at
 
 
 ```mermaid
-graph TD
-  subgraph Controller
-    A[Controller]
-  end
-  subgraph Service Layer
-    B[Service]
-  end
-  subgraph Domain Layer
-    C1[Entity]
-    C2[Value Object]
-    C3[Domain Service]
-  end
-  subgraph Infra Layer
-  	D[Repository/DAO]
-    DB[(Database)]
-    %% MQ[(Message Queue)]
-    %% Cache[(Cache)]
-    %% Third[Third-party Service]
-  end
-
-  A --> B
-  B --> C1
-  B --> C2
-  B --> C3
-  C1 --> D
-  C2 --> D
-  C3 --> D
-  D --> DB
-```
-
-```mermaid
-flowchart LR
+flowchart TD
   %% 外部
   Client[应用终端]
   APIGW[API网关]
@@ -118,10 +101,7 @@ flowchart LR
   %% 系统主框
   subgraph 系统
     subgraph 用户接口层
-      subgraph Facade[facade]
-        FacadeInterface[接口]
-        FacadeImpl[实现]
-      end
+      Controller[控制器]
     end
 
     subgraph 应用层
@@ -142,7 +122,8 @@ flowchart LR
     end
 
     subgraph 基础层
-      RepoImplDB[仓储实现]
+      DAO[DAO/仓储实现]
+      PO[Model]
       DB[(DB)]
       %% RepoImplFile[仓储实现]
       %% File[文件]
@@ -151,9 +132,8 @@ flowchart LR
 
   %% 关系
   Client --> APIGW
-  APIGW --> FacadeInterface
-  FacadeInterface --> FacadeImpl
-  FacadeImpl --> AppService
+  APIGW --> Controller
+  Controller --> AppService
 
   AppService --> DomainService
 
@@ -164,10 +144,13 @@ flowchart LR
   AggregatesA --> DomainRepoPort
   AggregatesB --> DomainRepoPort
 
-  DomainRepoPort --> RepoImplDB
+
+  DomainRepoPort --> DAO
   %% AppRepoPort --> RepoImplFile
-  RepoImplDB --> DB
+  DAO --> PO
+  PO --> DB
   %% RepoImplFile --> File
+ 
 ```
 
 ## 功能
