@@ -98,7 +98,7 @@ func (user *UserHandler) LogoutUser(c *gin.Context) {
 		return
 	}
 
-	session.Delete("userID")
+	session.Delete(userID)
 	if err := session.Save(); err != nil {
 		c.JSON(500, gin.H{"error": "Failed to save session"})
 		return
