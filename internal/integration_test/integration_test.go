@@ -18,6 +18,8 @@ import (
 	"github.com/n3xtchen/gin-3at/internal/seed"
 	"github.com/n3xtchen/gin-3at/internal/service"
 	"github.com/n3xtchen/gin-3at/internal/testutils"
+
+	shared "github.com/n3xtchen/gin-3at/internal/infrastructure/shared"
 )
 
 // DB is the global database client
@@ -51,6 +53,7 @@ func setupTestServer() *gin.Engine {
 	testutils.SeedTestDB(db)
 
 	store := cookie.NewStore([]byte(appConf.Secret))
+	sessionInitor := shared.NewCookieSession("session", store)
 
 	// dao
 	orderRepository := dao.NewOrderDao(db.Debug())
@@ -70,7 +73,7 @@ func setupTestServer() *gin.Engine {
 	categoryHandler := handler.NewCategoryHandler(categoryService)
 	productHandler := handler.NewProductHandler(productService)
 
-	r := router.SetupRouter(store, userHandler, orderHandler, categoryHandler, productHandler)
+	r := router.SetupRouter(sessionInitor, userHandler, orderHandler, categoryHandler, productHandler)
 
 	return r
 }

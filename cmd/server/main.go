@@ -9,6 +9,8 @@ import (
 	"github.com/n3xtchen/gin-3at/internal/pkg"
 	"github.com/n3xtchen/gin-3at/internal/router"
 	"github.com/n3xtchen/gin-3at/internal/service"
+
+	shared "github.com/n3xtchen/gin-3at/internal/infrastructure/shared"
 )
 
 // @title           Gin 3at
@@ -55,9 +57,10 @@ func main() {
 
 	// session
 	store := cookie.NewStore([]byte(appConf.Secret))
+	sessionInitor := shared.NewCookieSession("session", store)
 
 	// router
-	r := router.SetupRouter(store, userHandler, orderHandler, categoryHandler, productHandler)
+	r := router.SetupRouter(sessionInitor, userHandler, orderHandler, categoryHandler, productHandler)
 
 	r.Run(":" + appConf.Port) // 监听并在 0.0.0.0:8080 上启动服务
 }
