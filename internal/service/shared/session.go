@@ -1,13 +1,11 @@
 package shared
 
-import (
-	"context"
+type SessionData struct {
+	UserID string
+}
 
-	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
-)
-
-type SessionContext interface {
-	UserID() string
-	save(ctx context.Context, user *e.User) error
-	clear(ctx context.Context) error
+type Session interface {
+	Save(data *SessionData) error
+	Get() (*SessionData, error)
+	Clear() error
 }
