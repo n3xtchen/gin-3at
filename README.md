@@ -53,8 +53,14 @@ flowchart TD
     end
 
     subgraph 应用层
-      AppService[应用服务]
+    	
+      subgraph AppService[应用服务层]
+      	App1[应用1]
+      end
       %% AppRepoPort[仓储接口]
+      subgraph SharedService[共享服务层]
+      	SessionRepoPort[会话]
+      end
     end
 
     subgraph 领域层
@@ -70,11 +76,16 @@ flowchart TD
     end
 
     subgraph 基础层
-      DAO[DAO/仓储实现]
-      PO[Model]
-      DB[(DB)]
-      %% RepoImplFile[仓储实现]
-      %% File[文件]
+    	subgraph 数据库
+      	DAO[DAO/仓储实现]
+      	PO[Model]
+      	DB[(DB)]
+      end
+      
+      subgraph 会话
+      	RepoImplFile[Cookie/仓储实现]
+      	File[文件]
+      end
     end
   end
 
@@ -82,8 +93,9 @@ flowchart TD
   Client --> APIGW
   APIGW --> Controller
   Controller --> AppService
+  Controller --> SharedService
 
-  AppService --> DomainService
+  App1 --> DomainService
 
   DomainService --> AggregatesA
   DomainService --> AggregatesB
@@ -94,10 +106,10 @@ flowchart TD
 
 
   DomainRepoPort --> DAO
-  %% AppRepoPort --> RepoImplFile
+  SessionRepoPort --> RepoImplFile
   DAO --> PO
   PO --> DB
-  %% RepoImplFile --> File
+  RepoImplFile --> File
  
 ```
 
