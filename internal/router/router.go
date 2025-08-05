@@ -3,7 +3,6 @@ package router
 import (
 	"os"
 
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	docs "github.com/n3xtchen/gin-3at/docs"    // swagger docs
@@ -15,18 +14,6 @@ import (
 	"github.com/n3xtchen/gin-3at/internal/middleware"
 	shared "github.com/n3xtchen/gin-3at/internal/service/shared"
 )
-
-func AuthRequired() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		if session.Get("userID") == nil {
-			c.JSON(401, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-		c.Next()
-	}
-}
 
 func SetupRouter(sessionInitor func(*gin.Context) shared.Session, userHandler *handler.UserHandler, orderHandler *handler.OrderHandler, categoryHandler *handler.CategoryHandler, productHandler *handler.ProductHandler) *gin.Engine {
 
