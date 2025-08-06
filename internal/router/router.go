@@ -48,7 +48,7 @@ func SetupRouter(sessionInitor func(*gin.Context) shared.Session, userHandler *h
 		v1.GET("/products", productHandler.GetAllProducts)
 
 		authed := v1.Group("/")
-		authed.Use(AuthRequired())
+		authed.Use(middleware.AuthRequired())
 		{
 			// orders
 			authed.POST("/orders", orderHandler.Save)
