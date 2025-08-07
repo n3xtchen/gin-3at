@@ -1,7 +1,7 @@
 package shared
 
 type SessionData struct {
-	UserID string
+	UserID int
 }
 
 type Session interface {

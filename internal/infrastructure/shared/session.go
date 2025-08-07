@@ -8,17 +8,36 @@ import (
 	shared "github.com/n3xtchen/gin-3at/internal/service/shared"
 )
 
+const (
+	DefaultKey = "session-3at"
+)
+
 type CookieSession struct {
+	session gin.HandlerFunc
 	context *gin.Context
 }
 
 // NewCookieSessionContext creates a new CookieSessionStore instance.
-func NewCookieSession(name string, store cookie.Store) func(ctx *gin.Context) shared.Session {
-	return func(ctx *gin.Context) shared.Session {
-		sessions.Sessions(name, store)(ctx)
-		return &CookieSession{
-			ctx,
-		}
+// func NewCookieSession(name string, store cookie.Store) shared.Session {
+func NewCookieSession(name string, store cookie.Store) *CookieSession {
+	session := sessions.Sessions(name, store)
+	return &CookieSession{
+		session: session,
+		context: nil,
+	}
+}
+
+func (s *CookieSession) MiddleWares() []gin.HandlerFunc {
+	return []gin.HandlerFunc{
+		s.session,
+		func(c *gin.Context) {
+			s.context = c
+			data, _ := s.Get()
+			if data != nil {
+				c.Set(DefaultKey, data)
+			}
+			c.Next()
+		},
 	}
 }
 
@@ -40,7 +59,7 @@ func (s *CookieSession) Get() (*shared.SessionData, error) {
 	if userID == nil {
 		return nil, nil // No session found
 	}
-	return &shared.SessionData{UserID: userID.(string)}, nil // Replace with actual implementation
+	return &shared.SessionData{UserID: userID.(int)}, nil // Replace with actual implementation
 }
 
 func (s *CookieSession) Clear() error {

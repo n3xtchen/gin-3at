@@ -12,17 +12,15 @@ import (
 	"github.com/n3xtchen/gin-3at/internal/handler"
 
 	"github.com/n3xtchen/gin-3at/internal/middleware"
-	shared "github.com/n3xtchen/gin-3at/internal/service/shared"
 )
 
-func SetupRouter(sessionInitor func(*gin.Context) shared.Session, userHandler *handler.UserHandler, orderHandler *handler.OrderHandler, categoryHandler *handler.CategoryHandler, productHandler *handler.ProductHandler) *gin.Engine {
+func SetupRouter(middlewares []gin.HandlerFunc, userHandler *handler.UserHandler, orderHandler *handler.OrderHandler, categoryHandler *handler.CategoryHandler, productHandler *handler.ProductHandler) *gin.Engine {
 
 	router := gin.Default()
 
 	// session
 	// router.Use(sessions.Sessions("session", store))
-	sessionMiddleware := middleware.Session(sessionInitor)
-	router.Use(sessionMiddleware)
+	router.Use(middlewares...)
 
 	{
 		v1 := router.Group("api/v1")

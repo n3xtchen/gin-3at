@@ -73,7 +73,7 @@ func setupTestServer() *gin.Engine {
 	categoryHandler := handler.NewCategoryHandler(categoryService)
 	productHandler := handler.NewProductHandler(productService)
 
-	r := router.SetupRouter(sessionInitor, userHandler, orderHandler, categoryHandler, productHandler)
+	r := router.SetupRouter(sessionInitor.MiddleWares(), userHandler, orderHandler, categoryHandler, productHandler)
 
 	return r
 }

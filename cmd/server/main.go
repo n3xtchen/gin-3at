@@ -57,10 +57,10 @@ func main() {
 
 	// session
 	store := cookie.NewStore([]byte(appConf.Secret))
-	sessionInitor := shared.NewCookieSession("session", store)
+	session := shared.NewCookieSession("session", store)
 
 	// router
-	r := router.SetupRouter(sessionInitor, userHandler, orderHandler, categoryHandler, productHandler)
+	r := router.SetupRouter(session.MiddleWares(), userHandler, orderHandler, categoryHandler, productHandler)
 
 	r.Run(":" + appConf.Port) // 监听并在 0.0.0.0:8080 上启动服务
 }
