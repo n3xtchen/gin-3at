@@ -76,10 +76,16 @@ flowchart TD
     end
 
     subgraph 基础层
+    	subgraph 仓储实现
+      	DAO[DAO]
+      end
     	subgraph 数据库
-      	DAO[DAO/仓储实现]
       	PO[Model]
       	DB[(DB)]
+      end
+      
+      subgraph 缓存
+      	Redis[Redis]
       end
       
       subgraph 会话
@@ -109,6 +115,7 @@ flowchart TD
   SessionRepoPort --> RepoImplFile
   DAO --> PO
   PO --> DB
+  DAO --> Redis
   RepoImplFile --> File
  
 ```
