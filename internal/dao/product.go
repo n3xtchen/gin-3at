@@ -1,6 +1,11 @@
 package dao
 
 import (
+	"context"
+	"encoding/json"
+	"strconv"
+
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
 	e "github.com/n3xtchen/gin-3at/internal/domain/entity"
@@ -9,12 +14,14 @@ import (
 )
 
 type ProductDao struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache *redis.Client
 }
 
-func NewProductDao(db *gorm.DB) repo.ProductRepository {
+func NewProductDao(db *gorm.DB, cache *redis.Client) repo.ProductRepository {
 	return &ProductDao{
 		db,
+		cache,
 	}
 }
 
@@ -82,8 +89,19 @@ func (dao *ProductDao) List() ([]*e.Product, error) {
 // with Category, you can use Preload to load the category information.
 func (dao *ProductDao) FindByID(productID int) (*e.Product, error) {
 	var productModel m.Product
-	if err := dao.db.Preload("Category").First(&productModel, productID).Error; err != nil {
-		return nil, err
+
+	ctx := context.Background()
+	productCache, err := dao.cache.Get(ctx, strconv.Itoa(productID)).Result()
+	if err == redis.Nil {
+		if err := dao.db.Preload("Category").First(&productModel, productID).Error; err != nil {
+			return nil, err
+		}
+		productCache, err := json.Marshal(productModel)
+		if err == nil {
+			dao.cache.Set(ctx, strconv.Itoa(productID), productCache, 0)
+		}
+	} else {
+		err = json.Unmarshal([]byte(productCache), &productModel)
 	}
 	// Convert m.Product to e.Product
 	product := productModel.ToEntity()

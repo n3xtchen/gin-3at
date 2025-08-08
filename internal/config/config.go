@@ -11,6 +11,7 @@ type Config struct {
 	Env    string `env:"APP_ENV" envDefault:"development"`
 	Secret string `env:"APP_SECRET"`
 	MySQL  MySQLConfig
+	Redis  RedisConfig
 }
 
 type MySQLConfig struct {
@@ -19,6 +20,13 @@ type MySQLConfig struct {
 	User     string `env:"MYSQL_USER" envDefault:"root"`
 	Password string `env:"MYSQL_PASSWORD"`
 	Database string `env:"MYSQL_DB" envDefault:"test"`
+}
+
+type RedisConfig struct {
+	Host     string `env:"REDIS_HOST" envDefault:"localhost"`
+	Port     int    `env:"REDIS_PORT" envDefault:"6379"`
+	Password string `env:"REDIS_PASSWORD"`
+	Database int    `env:"REDIS_DB" envDefault:"0"`
 }
 
 func InitConfig() *Config {

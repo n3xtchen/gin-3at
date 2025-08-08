@@ -36,12 +36,14 @@ func main() {
 	// Initialize Database
 	mysqlConf := appConf.MySQL
 	db := pkg.InitMySQL(mysqlConf.User, mysqlConf.Password, mysqlConf.Host, mysqlConf.Port, mysqlConf.Database)
+	redisConf := appConf.Redis
+	cache := pkg.InitCache(redisConf.Host, redisConf.Port, redisConf.Password, redisConf.Database)
 
 	// dao
 	userRepository := dao.NewUserDao(db)
 	orderRepository := dao.NewOrderDao(db)
 	categoryRepository := dao.NewCategoryDao(db)
-	productRepository := dao.NewProductDao(db)
+	productRepository := dao.NewProductDao(db, cache)
 
 	// service
 	userService := service.NewUserService(userRepository)
