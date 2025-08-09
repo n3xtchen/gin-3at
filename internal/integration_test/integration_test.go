@@ -14,6 +14,7 @@ import (
 
 	"github.com/n3xtchen/gin-3at/internal/dao"
 	"github.com/n3xtchen/gin-3at/internal/handler"
+	"github.com/n3xtchen/gin-3at/internal/pkg"
 	"github.com/n3xtchen/gin-3at/internal/router"
 	"github.com/n3xtchen/gin-3at/internal/seed"
 	"github.com/n3xtchen/gin-3at/internal/service"
@@ -48,6 +49,8 @@ func setupTestServer() *gin.Engine {
 	appConf := testutils.InitTestConfig()
 
 	db = testutils.InitTestDB(&appConf.MySQL)
+	redisConf := appConf.Redis
+	cache := pkg.InitCache(redisConf.Host, redisConf.Port, redisConf.Password, redisConf.Database)
 
 	// Seed Categories
 	testutils.SeedTestDB(db)
@@ -59,7 +62,7 @@ func setupTestServer() *gin.Engine {
 	orderRepository := dao.NewOrderDao(db.Debug())
 	userRepository := dao.NewUserDao(db.Debug())
 	categoryRepository := dao.NewCategoryDao(db.Debug())
-	productRepository := dao.NewProductDao(db.Debug())
+	productRepository := dao.NewProductDao(db.Debug(), cache)
 
 	// service
 	orderService := service.NewOrderService(db, orderRepository)
