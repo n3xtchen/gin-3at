@@ -48,19 +48,21 @@ flowchart TD
 
   %% 系统主框
   subgraph 系统
+    direction TB
     subgraph 用户接口层
       Controller[控制器]
     end
 
     subgraph 应用层
-    	
+    	direction LR
       subgraph AppService[应用服务层]
-      	App1[应用1]
+      	App[应用服务]
       end
       %% AppRepoPort[仓储接口]
       subgraph SharedService[共享服务层]
       	SessionRepoPort[会话]
       end
+      %% App --> SessionRepoPort
     end
 
     subgraph 领域层
@@ -78,6 +80,7 @@ flowchart TD
     subgraph 基础层
     	subgraph 仓储实现
       	DAO[DAO]
+      	SessionImp[Cookie]
       end
     	subgraph 数据库
       	PO[Model]
@@ -87,9 +90,8 @@ flowchart TD
       subgraph 缓存
       	Redis[Redis]
       end
-      
+     
       subgraph 会话
-      	RepoImplFile[Cookie/仓储实现]
       	File[文件]
       end
     end
@@ -99,10 +101,11 @@ flowchart TD
   Client --> APIGW
   APIGW --> Controller
   Controller --> AppService
-  Controller --> SharedService
-
-  App1 --> DomainService
-
+	%%Controller --> SharedService
+  App --> DomainService
+  App --> DomainRepoPort
+	%%AppService --> SharedService
+	
   DomainService --> AggregatesA
   DomainService --> AggregatesB
   AggregatesA --> ValueObjA
@@ -110,13 +113,12 @@ flowchart TD
   AggregatesA --> DomainRepoPort
   AggregatesB --> DomainRepoPort
 
-
   DomainRepoPort --> DAO
-  SessionRepoPort --> RepoImplFile
+  SessionRepoPort --> SessionImp
   DAO --> PO
   PO --> DB
   DAO --> Redis
-  RepoImplFile --> File
+  SessionImp --> File
  
 ```
 
