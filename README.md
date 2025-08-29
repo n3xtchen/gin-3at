@@ -15,112 +15,11 @@
 
 ### 2.1. 架构图
 
-```mermaid
-flowchart TD
-    FE[前端客户端] --> API[Gin]
-    API --> APP[单体应用]
-    APP --> USERS[用户模块]
-    APP --> PRODUCTS[商品模块]
-    APP --> INVENTORY[库存模块]
-    APP --> ORDERS[订单模块]
-    APP --> PAYMENTS[支付模块]
-    APP --> MYSQL[(MySQL数据库)]
-    APP --> REDIS[(Redis缓存)]
-    USERS --> MYSQL
-    PRODUCTS --> MYSQL
-    INVENTORY --> MYSQL
-    ORDERS --> MYSQL
-    PAYMENTS --> MYSQL
-    USERS --> REDIS
-    PRODUCTS --> REDIS
-    INVENTORY --> REDIS
-    ORDERS --> REDIS
-    PAYMENTS --> REDIS
-```
+![架构图](./docs/architecture/arch.svg)
 
 ### 2.2. DDD 架构
 
-```mermaid
-flowchart TD
-  %% 外部
-  Client[应用终端]
-  APIGW[API网关]
-
-  %% 系统主框
-  subgraph 系统
-    direction TB
-    subgraph 用户接口层
-      Controller[控制器]
-    end
-
-    subgraph 应用层
-    	direction LR
-      subgraph AppService[应用服务层]
-      	App[应用服务]
-      end
-      %% AppRepoPort[仓储接口]
-      subgraph SharedService[共享服务层]
-      	SessionRepoPort[会话]
-      end
-      %% App --> SessionRepoPort
-    end
-
-    subgraph 领域层
-      DomainService[领域服务]
-
-      subgraph AggregatesA[聚合A]
-        ValueObjA[实体/值对象A]
-      end
-      subgraph AggregatesB[聚合B]
-        ValueObjB[实体/值对象B]
-      end
-      DomainRepoPort[仓储接口]
-    end
-
-    subgraph 基础层
-    	subgraph 仓储实现
-      	DAO[DAO]
-      	SessionImp[Cookie]
-      end
-    	subgraph 数据库
-      	PO[Model]
-      	DB[(DB)]
-      end
-      
-      subgraph 缓存
-      	Redis[Redis]
-      end
-     
-      subgraph 会话
-      	File[文件]
-      end
-    end
-  end
-
-  %% 关系
-  Client --> APIGW
-  APIGW --> Controller
-  Controller --> AppService
-	%%Controller --> SharedService
-  App --> DomainService
-  App --> DomainRepoPort
-	%%AppService --> SharedService
-	
-  DomainService --> AggregatesA
-  DomainService --> AggregatesB
-  AggregatesA --> ValueObjA
-  AggregatesB --> ValueObjB
-  AggregatesA --> DomainRepoPort
-  AggregatesB --> DomainRepoPort
-
-  DomainRepoPort --> DAO
-  SessionRepoPort --> SessionImp
-  DAO --> PO
-  PO --> DB
-  DAO --> Redis
-  SessionImp --> File
- 
-```
+![DDD 架构](./docs/architecture/ddd.svg)
 
 ### 2.2 架构模式说明
 
